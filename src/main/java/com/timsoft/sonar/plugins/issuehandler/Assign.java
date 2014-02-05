@@ -47,15 +47,15 @@ public class Assign {
 
         try {
             return this.getOverrideAssignee();
-        } catch (IssueHandlerPluginException e) {
-            LOG.info(OVERRIDE_NOT_FOUND_MSG, e);
+        } catch (final IssueHandlerPluginException e) {
+            LOG.debug(OVERRIDE_NOT_FOUND_MSG);
         }
 
         try {
             sonarUser = this.getSonarUser(scmAuthor);
             return sonarUser;
         } catch (final SonarUserNotFoundException e) {
-            LOG.warn("Sonar user not found: " + scmAuthor, e);
+            LOG.debug("Sonar user not found: " + scmAuthor);
             return this.getDefaultAssignee();
         }
     }
@@ -63,8 +63,8 @@ public class Assign {
     public User getAssignee() throws IssueHandlerPluginException {
         try {
             return this.getOverrideAssignee();
-        } catch (IssueHandlerPluginException e) {
-            LOG.info(OVERRIDE_NOT_FOUND_MSG, e);
+        } catch (final IssueHandlerPluginException e) {
+            LOG.debug(OVERRIDE_NOT_FOUND_MSG);
         }
 
         return this.getDefaultAssignee();
@@ -72,13 +72,13 @@ public class Assign {
 
     private User getOverrideAssignee() throws SettingNotConfiguredException, SonarUserNotFoundException {
         final User overrideUser = this.getSonarAssignee(IssueHandlerPlugin.PROPERTY_OVERRIDE_ASSIGNEE);
-        LOG.info("Override assignee is configured: " + overrideUser.login());
+        LOG.debug("Override assignee is configured: " + overrideUser.login());
         return overrideUser;
     }
 
     private User getDefaultAssignee() throws SettingNotConfiguredException, SonarUserNotFoundException {
         final User defaultUser = this.getSonarAssignee(IssueHandlerPlugin.PROPERTY_DEFAULT_ASSIGNEE);
-        LOG.info("Default assignee is configured:" + defaultUser.login());
+        LOG.debug("Default assignee is configured:" + defaultUser.login());
         return defaultUser;
     }
 
@@ -93,7 +93,7 @@ public class Assign {
             throw new SonarUserNotFoundException();
         }
 
-        LOG.info("Found Sonar user: " + sonarUser.login());
+        LOG.debug("Found Sonar user: " + sonarUser.login());
         return sonarUser;
     }
 }

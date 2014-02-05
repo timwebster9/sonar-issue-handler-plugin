@@ -48,7 +48,7 @@ import java.util.List;
                   description = "Enable or disable the Issue Handler plugin.",
                   project = true,
                   type = PropertyType.BOOLEAN,
-                  defaultValue = "true")
+                  defaultValue = "false")
 })
 public final class IssueHandlerPlugin extends SonarPlugin {
 

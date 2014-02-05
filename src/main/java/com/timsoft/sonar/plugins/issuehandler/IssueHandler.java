@@ -53,7 +53,7 @@ public class IssueHandler implements org.sonar.api.issue.IssueHandler {
         final Issue issue = context.issue();
 
         if (issue.isNew()) {
-            LOG.info("Found new issue [" + issue.key() + "]");
+            LOG.debug("Found new issue [" + issue.key() + "]");
             try {
                 this.assignIssue(context, issue);
             } catch (IssueHandlerPluginException e) {
@@ -67,12 +67,12 @@ public class IssueHandler implements org.sonar.api.issue.IssueHandler {
         final String author = blame.getScmAuthorForIssue(issue);
 
         if (author == null) {
-            LOG.info("No author found for issue [" + issue.key() + " component [" + issue.componentKey() + "]");
+            LOG.debug("No author found for issue [" + issue.key() + " component [" + issue.componentKey() + "]");
             final User assignee = assign.getAssignee();
             LOG.info("Assigning issue [" + issue.key() + "] to assignee [" + assignee.login() + "]");
             context.assign(assignee);
         } else {
-            LOG.info("Found SCM author [" + author + "]");
+            LOG.debug("Found SCM author [" + author + "]");
             final User assignee = assign.getAssignee(author);
             LOG.info("Assigning issue [" + issue.key() + "] to assignee [" + assignee.login() + "]");
             context.assign(assignee);

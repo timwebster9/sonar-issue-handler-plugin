@@ -43,11 +43,11 @@ public class Blame {
         final String lastCommitterForResource = getLastCommitterForResource(issue.componentKey());
 
         if (lastCommitterForResource.equals(authorForIssueLine)) {
-            LOG.info("Author [" + authorForIssueLine + "] is also the last committer.");
+            LOG.debug("Author [" + authorForIssueLine + "] is also the last committer.");
             return authorForIssueLine;
         }
 
-        LOG.info("Last committer differs from author, assigning to last committer [" + lastCommitterForResource + "]");
+        LOG.debug("Last committer differs from author, assigning to last committer [" + lastCommitterForResource + "]");
         return lastCommitterForResource;
     }
 
@@ -71,7 +71,7 @@ public class Blame {
             }
         }
 
-        LOG.info("Found last committer [" + author + "] for resource [" + resourceKey + "]");
+        LOG.debug("Found last committer [" + author + "] for resource [" + resourceKey + "]");
         return author;
     }
 
