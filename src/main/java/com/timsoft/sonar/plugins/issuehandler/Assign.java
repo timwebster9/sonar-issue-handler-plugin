@@ -20,7 +20,6 @@
 package com.timsoft.sonar.plugins.issuehandler;
 
 import com.timsoft.sonar.plugins.issuehandler.exception.IssueHandlerPluginException;
-import com.timsoft.sonar.plugins.issuehandler.exception.SettingNotConfiguredException;
 import com.timsoft.sonar.plugins.issuehandler.exception.SonarUserNotFoundException;
 import com.timsoft.sonar.plugins.issuehandler.util.PluginUtils;
 import org.slf4j.Logger;
@@ -70,21 +69,21 @@ public class Assign {
         return this.getDefaultAssignee();
     }
 
-    private User getOverrideAssignee() throws SettingNotConfiguredException, SonarUserNotFoundException {
-        final User overrideUser = this.getSonarAssignee(IssueHandlerPlugin.PROPERTY_OVERRIDE_ASSIGNEE);
+    private User getOverrideAssignee() throws IssueHandlerPluginException {
+        final User overrideUser = this.getConfiguredSonarUser(IssueHandlerPlugin.PROPERTY_OVERRIDE_ASSIGNEE);
         LOG.debug("Override assignee is configured: " + overrideUser.login());
         return overrideUser;
     }
 
-    private User getDefaultAssignee() throws SettingNotConfiguredException, SonarUserNotFoundException {
-        final User defaultUser = this.getSonarAssignee(IssueHandlerPlugin.PROPERTY_DEFAULT_ASSIGNEE);
+    private User getDefaultAssignee() throws IssueHandlerPluginException {
+        final User defaultUser = this.getConfiguredSonarUser(IssueHandlerPlugin.PROPERTY_DEFAULT_ASSIGNEE);
         LOG.debug("Default assignee is configured:" + defaultUser.login());
         return defaultUser;
     }
 
-    private User getSonarAssignee(final String name) throws SettingNotConfiguredException, SonarUserNotFoundException {
-        final String assignee = PluginUtils.getConfiguredSetting(settings, name);
-        return this.getSonarUser(assignee);
+    private User getConfiguredSonarUser(final String key) throws IssueHandlerPluginException {
+        final String configuredUser = PluginUtils.getConfiguredSetting(settings, key);
+        return this.getSonarUser(configuredUser);
     }
 
     private User getSonarUser(final String userName) throws SonarUserNotFoundException {

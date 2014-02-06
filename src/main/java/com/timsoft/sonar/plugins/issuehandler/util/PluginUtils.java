@@ -43,7 +43,7 @@ public final class PluginUtils {
     public static String getConfiguredSetting(final Settings settings, final String key) throws SettingNotConfiguredException {
         final String setting =  settings.getString(key);
         if (StringUtils.isEmpty(setting)) {
-            LOG.warn("Plugin setting [" + key + "] not found.");
+            LOG.debug("Plugin setting [" + key + "] not configured.");
             throw new SettingNotConfiguredException();
         }
         return setting;
