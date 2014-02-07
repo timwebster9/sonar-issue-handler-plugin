@@ -54,7 +54,7 @@ public class MeasuresCollector implements Decorator {
                 final ScmMeasures scmMeasures = this.getMeasures(resource.getEffectiveKey(), decoratorContext);
                 resourceScmMeasures.put(resource.getEffectiveKey(), scmMeasures);
             } catch (final MissingScmMeasureDataException e) {
-                LOG.warn("Measures not collected for resource [" + resource.getEffectiveKey() + "]");
+                LOG.warn("SCM Measures not collected for resource [" + resource.getEffectiveKey() + "]");
             } catch (final Exception e) {
                 LOG.error("Error collecting measures for resource [" + resource.getEffectiveKey() + "]", e);
             }
@@ -85,7 +85,7 @@ public class MeasuresCollector implements Decorator {
         if (MeasureUtils.hasData(measure)) {
             return measure.getData();
         }
-        LOG.warn("No measure found for metric [" + metric.getKey() + "] on resource [" + resourceKey + "]");
+        LOG.debug("No measure found for metric [" + metric.getKey() + "] on resource [" + resourceKey + "]");
         throw new MissingScmMeasureDataException();
     }
 }
