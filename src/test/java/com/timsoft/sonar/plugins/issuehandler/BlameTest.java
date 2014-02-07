@@ -132,6 +132,15 @@ public class BlameTest {
         assertThat(author).isEqualTo(AUTHOR3);
     }
 
+    @Test(expected = MissingScmMeasureDataException.class)
+    public void testGetAuthorWithMissingMeasures() throws MissingScmMeasureDataException {
+        when(mockMeasuresCollector.getResources()).thenReturn(resources);
+        when(scmMeasures.getAuthorsByLine()).thenReturn(null);
+
+        final Blame classUnderTest = new Blame(mockMeasuresCollector);
+        classUnderTest.getScmAuthorForIssue(mockIssue);
+    }
+
     @Test(expected = NoUniqueAuthorForLastCommitException.class)
     public void testGetAuthorNoUniqueAuthorForLastCommit() throws MissingScmMeasureDataException {
 

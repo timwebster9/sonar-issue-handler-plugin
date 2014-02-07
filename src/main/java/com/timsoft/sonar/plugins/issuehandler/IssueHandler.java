@@ -52,13 +52,14 @@ public class IssueHandler implements org.sonar.api.issue.IssueHandler {
 
         final Issue issue = context.issue();
 
-        if (issue.isNew()) { //TODO not sure this check is necessary
+        //TODO not sure this check is necessary
+        if (issue.isNew()) {
             LOG.debug("Found new issue [" + issue.key() + "]");
             try {
                 this.assignIssue(context, issue);
             } catch (final IssueHandlerPluginException e) {
                 LOG.warn("Unable to assign issue [" + issue.key() + "]");
-            } catch (final Throwable t) {  // TODO catch Throwable?
+            } catch (final Exception t) {
                 LOG.error("Error assigning issue [" + issue.key() + "]", t);
             }
         }

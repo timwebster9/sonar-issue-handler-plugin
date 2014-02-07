@@ -90,6 +90,27 @@ public class IssueHandlerTest {
     }
 
     @Test
+    public void testOnIssueWithRuntimeException() throws Exception {
+
+        when(context.issue()).thenReturn(issue);
+        when(issue.componentKey()).thenReturn(COMPONENT_KEY);
+        when(settings.getBoolean(IssueHandlerPlugin.PROPERTY_ENABLED)).thenReturn(true);
+        when(issue.isNew()).thenReturn(true);
+        when(blame.getScmAuthorForIssue(issue)).thenReturn(SCM_AUTHOR);
+        when(issue.key()).thenReturn(ISSUE_KEY);
+        when(assign.getAssignee(SCM_AUTHOR)).thenThrow(RuntimeException.class);
+
+        context.assign(assignee);
+
+        final IssueHandler classUnderTest =
+                new com.timsoft.sonar.plugins.issuehandler.IssueHandler(measuresCollector, settings, userFinder);
+        Whitebox.setInternalState(classUnderTest, "blame", blame);
+        Whitebox.setInternalState(classUnderTest, "assign", assign);
+
+        classUnderTest.onIssue(context);
+    }
+
+    @Test
     public void testOnIssueWithScmAuthorWithAssignException() throws Exception {
 
         when(context.issue()).thenReturn(issue);

@@ -76,15 +76,8 @@ public class Blame {
         return author;
     }
 
-    private String getAuthorForIssueLine(final Issue issue) {
-        final  Map<Integer, String> authorMap = this.getAuthorsPerLineMeasure(issue.componentKey());
-        LOG.debug("Measure data after parse: [" + authorMap.toString() + "]");
-        return authorMap.get(issue.line());
-    }
-
-    private Map<Integer, String> getAuthorsPerLineMeasure(final String componentKey) {
-        final Map<String, ScmMeasures> resources = measuresCollector.getResources();
-        return resources.get(componentKey).getAuthorsByLine();
+    private String getAuthorForIssueLine(final Issue issue) throws MissingScmMeasureDataException {
+        return getMeasuresForResource(issue.componentKey()).getAuthorsByLine().get(issue.line());
     }
 
     private ScmMeasures getMeasuresForResource(final String resourceKey) throws MissingScmMeasureDataException {
@@ -92,7 +85,7 @@ public class Blame {
         if (scmMeasures == null) {
             throw new MissingScmMeasureDataException();
         }
-        return this.measuresCollector.getResources().get(resourceKey);
+        return scmMeasures;
     }
 
     private Date getLastCommitDate(final String resourceKey) throws MissingScmMeasureDataException {
