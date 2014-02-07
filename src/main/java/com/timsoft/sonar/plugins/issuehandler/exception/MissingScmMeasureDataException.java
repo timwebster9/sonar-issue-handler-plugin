@@ -19,5 +19,5 @@
  */
 package com.timsoft.sonar.plugins.issuehandler.exception;
 
-public class MissingScmMeasureDataException extends RuntimeException {
+public class MissingScmMeasureDataException extends IssueHandlerPluginException {
 }

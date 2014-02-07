@@ -48,8 +48,12 @@ public class MeasuresCollector implements Decorator {
     public void decorate(final Resource resource, final DecoratorContext decoratorContext) {
 
         if (ResourceUtils.isFile(resource)) {
-            final ScmMeasures scmMeasures = this.getMeasures(resource.getEffectiveKey(), decoratorContext);
-            resourceScmMeasures.put(resource.getEffectiveKey(), scmMeasures);
+            try {
+                final ScmMeasures scmMeasures = this.getMeasures(resource.getEffectiveKey(), decoratorContext);
+                resourceScmMeasures.put(resource.getEffectiveKey(), scmMeasures);
+            } catch (final MissingScmMeasureDataException e) {
+                LOG.warn("Measures not collected for resource [" + resource.getEffectiveKey() + "]");
+            }
         }
     }
 
@@ -63,7 +67,7 @@ public class MeasuresCollector implements Decorator {
         return this.resourceScmMeasures;
     }
 
-    private ScmMeasures getMeasures(final String resourceKey, final DecoratorContext decoratorContext) {
+    private ScmMeasures getMeasures(final String resourceKey, final DecoratorContext decoratorContext) throws MissingScmMeasureDataException {
         final String authorsByLineMeasureData = this.getMeasureData(decoratorContext, CoreMetrics.SCM_AUTHORS_BY_LINE);
         final String lastCommitByLineMeasureData = this.getMeasureData(decoratorContext, CoreMetrics.SCM_LAST_COMMIT_DATETIMES_BY_LINE);
         final String revisionsByLineMeasureData = this.getMeasureData(decoratorContext, CoreMetrics.SCM_REVISIONS_BY_LINE);
@@ -72,7 +76,7 @@ public class MeasuresCollector implements Decorator {
                 lastCommitByLineMeasureData, revisionsByLineMeasureData);
     }
 
-    private String getMeasureData(final DecoratorContext decoratorContext, final Metric metric) {
+    private String getMeasureData(final DecoratorContext decoratorContext, final Metric metric) throws MissingScmMeasureDataException {
         final String measureData = decoratorContext.getMeasure(metric).getData();
         if (measureData == null) {
             LOG.error("No data found for metric [" + metric.getKey() + "]");

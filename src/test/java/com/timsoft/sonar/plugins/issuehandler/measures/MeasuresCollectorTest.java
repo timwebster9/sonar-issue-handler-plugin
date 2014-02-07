@@ -20,7 +20,6 @@
 package com.timsoft.sonar.plugins.issuehandler.measures;
 
 import com.timsoft.sonar.plugins.issuehandler.IssueHandlerPlugin;
-import com.timsoft.sonar.plugins.issuehandler.exception.MissingScmMeasureDataException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -79,7 +78,7 @@ public class MeasuresCollectorTest {
         assertThat(measure.getAuthorsByLine()).containsKey(2).containsValue("user2");
     }
 
-    @Test(expected = MissingScmMeasureDataException.class)
+    @Test
     public void testDecorateMeasureWithoutMeasureFound() throws Exception {
         when(resource.getScope()).thenReturn(Scopes.FILE);
         when(resource.getEffectiveKey()).thenReturn(EFFECTIVE_KEY);
@@ -96,8 +95,7 @@ public class MeasuresCollectorTest {
 
         final Map<String, ScmMeasures> resources = classUnderTest.getResources();
         assertThat(resources).isNotNull()
-                .hasSize(1);
-        resources.get(EFFECTIVE_KEY).getAuthorsByLine();
+                .hasSize(0);
     }
 
     @Test

@@ -19,6 +19,7 @@
  */
 package com.timsoft.sonar.plugins.issuehandler;
 
+import com.timsoft.sonar.plugins.issuehandler.exception.MissingScmMeasureDataException;
 import com.timsoft.sonar.plugins.issuehandler.exception.NoUniqueAuthorForLastCommitException;
 import com.timsoft.sonar.plugins.issuehandler.measures.MeasuresCollector;
 import com.timsoft.sonar.plugins.issuehandler.measures.ScmMeasures;
@@ -37,7 +38,7 @@ public class Blame {
         this.measuresCollector = measuresCollector;
     }
 
-    public String getScmAuthorForIssue(final Issue issue) {
+    public String getScmAuthorForIssue(final Issue issue) throws MissingScmMeasureDataException {
 
         final String authorForIssueLine = this.getAuthorForIssueLine(issue);
         final String lastCommitterForResource = getLastCommitterForResource(issue.componentKey());
@@ -51,7 +52,7 @@ public class Blame {
         return lastCommitterForResource;
     }
 
-    private String getLastCommitterForResource(final String resourceKey) {
+    private String getLastCommitterForResource(final String resourceKey) throws MissingScmMeasureDataException {
         final Date lastCommitDate = this.getLastCommitDate(resourceKey);
         final List<Integer> linesFromLastCommit = this.getLinesFromLastCommit(resourceKey, lastCommitDate);
         final ScmMeasures scmMeasures = this.getMeasuresForResource(resourceKey);
@@ -86,18 +87,22 @@ public class Blame {
         return resources.get(componentKey).getAuthorsByLine();
     }
 
-    private ScmMeasures getMeasuresForResource(final String resourceKey) {
+    private ScmMeasures getMeasuresForResource(final String resourceKey) throws MissingScmMeasureDataException {
+        final ScmMeasures scmMeasures = this.measuresCollector.getResources().get(resourceKey);
+        if (scmMeasures == null) {
+            throw new MissingScmMeasureDataException();
+        }
         return this.measuresCollector.getResources().get(resourceKey);
     }
 
-    private Date getLastCommitDate(final String resourceKey) {
+    private Date getLastCommitDate(final String resourceKey) throws MissingScmMeasureDataException {
         final ScmMeasures scmMeasures = this.getMeasuresForResource(resourceKey);
         final Collection<Date> commitDatesForResource = scmMeasures.getLastCommitsByLine().values();
         final SortedSet<Date> sortedSet = new TreeSet(commitDatesForResource);
         return sortedSet.last();
     }
 
-    private List<Integer> getLinesFromLastCommit(final String resourceKey, final Date lastCommitDate) {
+    private List<Integer> getLinesFromLastCommit(final String resourceKey, final Date lastCommitDate) throws MissingScmMeasureDataException {
 
         final List<Integer> lines = new ArrayList<Integer>();
         final ScmMeasures scmMeasures = this.getMeasuresForResource(resourceKey);

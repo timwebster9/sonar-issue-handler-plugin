@@ -19,6 +19,7 @@
  */
 package com.timsoft.sonar.plugins.issuehandler;
 
+import com.timsoft.sonar.plugins.issuehandler.exception.MissingScmMeasureDataException;
 import com.timsoft.sonar.plugins.issuehandler.exception.NoUniqueAuthorForLastCommitException;
 import com.timsoft.sonar.plugins.issuehandler.measures.MeasuresCollector;
 import com.timsoft.sonar.plugins.issuehandler.measures.ScmMeasures;
@@ -74,7 +75,7 @@ public class BlameTest {
     }
 
     @Test
-    public void testGetAuthorSameAsLastCommitter() {
+    public void testGetAuthorSameAsLastCommitter() throws MissingScmMeasureDataException {
 
         final Map<Integer, String> authorMap = new HashMap<Integer, String>();
         authorMap.put(1, AUTHOR1);
@@ -104,7 +105,7 @@ public class BlameTest {
     }
 
     @Test
-    public void testGetAuthorIsLastCommitter() {
+    public void testGetAuthorIsLastCommitter() throws MissingScmMeasureDataException {
 
         final Map<Integer, String> authorMap = new HashMap<Integer, String>();
         authorMap.put(1, AUTHOR1);
@@ -132,7 +133,7 @@ public class BlameTest {
     }
 
     @Test(expected = NoUniqueAuthorForLastCommitException.class)
-    public void testGetAuthorNoUniqueAuthorForLastCommit() {
+    public void testGetAuthorNoUniqueAuthorForLastCommit() throws MissingScmMeasureDataException {
 
         final Map<Integer, String> authorMap = new HashMap<Integer, String>();
         authorMap.put(1, AUTHOR1);
