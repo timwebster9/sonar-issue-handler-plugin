@@ -99,6 +99,20 @@ public class MeasuresCollectorTest {
     }
 
     @Test
+    public void testDecorateMeasureWithRuntimeException() throws Exception {
+        when(resource.getScope()).thenReturn(Scopes.FILE);
+        when(resource.getEffectiveKey()).thenReturn(EFFECTIVE_KEY);
+        when(decoratorContext.getMeasure(CoreMetrics.SCM_AUTHORS_BY_LINE)).thenThrow(RuntimeException.class);
+
+        final MeasuresCollector classUnderTest = new MeasuresCollector(settings);
+        classUnderTest.decorate(resource, decoratorContext);
+
+        final Map<String, ScmMeasures> resources = classUnderTest.getResources();
+        assertThat(resources).isNotNull()
+                .hasSize(0);
+    }
+
+    @Test
     public void testDecorateWithNonFileMeasure() throws Exception {
         when(resource.getScope()).thenReturn(Scopes.DIRECTORY);
 

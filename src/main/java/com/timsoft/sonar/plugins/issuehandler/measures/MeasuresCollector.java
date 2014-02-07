@@ -53,6 +53,8 @@ public class MeasuresCollector implements Decorator {
                 resourceScmMeasures.put(resource.getEffectiveKey(), scmMeasures);
             } catch (final MissingScmMeasureDataException e) {
                 LOG.warn("Measures not collected for resource [" + resource.getEffectiveKey() + "]");
+            } catch (final Exception e) {
+                LOG.error("Error collecting measures for resource [" + resource.getEffectiveKey() + "]", e);
             }
         }
     }
