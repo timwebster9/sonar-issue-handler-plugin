@@ -27,6 +27,7 @@ import org.sonar.api.batch.Decorator;
 import org.sonar.api.batch.DecoratorContext;
 import org.sonar.api.config.Settings;
 import org.sonar.api.measures.CoreMetrics;
+import org.sonar.api.measures.Measure;
 import org.sonar.api.measures.Metric;
 import org.sonar.api.resources.Project;
 import org.sonar.api.resources.Resource;
@@ -70,20 +71,23 @@ public class MeasuresCollector implements Decorator {
     }
 
     private ScmMeasures getMeasures(final String resourceKey, final DecoratorContext decoratorContext) throws MissingScmMeasureDataException {
-        final String authorsByLineMeasureData = this.getMeasureData(decoratorContext, CoreMetrics.SCM_AUTHORS_BY_LINE);
-        final String lastCommitByLineMeasureData = this.getMeasureData(decoratorContext, CoreMetrics.SCM_LAST_COMMIT_DATETIMES_BY_LINE);
-        final String revisionsByLineMeasureData = this.getMeasureData(decoratorContext, CoreMetrics.SCM_REVISIONS_BY_LINE);
+        final String authorsByLineMeasureData = this.getMeasureData(decoratorContext, CoreMetrics.SCM_AUTHORS_BY_LINE, resourceKey);
+        final String lastCommitByLineMeasureData = this.getMeasureData(decoratorContext, CoreMetrics.SCM_LAST_COMMIT_DATETIMES_BY_LINE, resourceKey);
+        final String revisionsByLineMeasureData = this.getMeasureData(decoratorContext, CoreMetrics.SCM_REVISIONS_BY_LINE, resourceKey);
 
         return new ScmMeasures(resourceKey, authorsByLineMeasureData,
                 lastCommitByLineMeasureData, revisionsByLineMeasureData);
     }
 
-    private String getMeasureData(final DecoratorContext decoratorContext, final Metric metric) throws MissingScmMeasureDataException {
-        final String measureData = decoratorContext.getMeasure(metric).getData();
-        if (measureData == null) {
-            LOG.error("No data found for metric [" + metric.getKey() + "]");
-            throw new MissingScmMeasureDataException();
+    private String getMeasureData(final DecoratorContext decoratorContext, final Metric metric, final String resourceKey) throws MissingScmMeasureDataException {
+        final Measure measure = decoratorContext.getMeasure(metric);
+        if (measure != null) {
+            final String measureData = measure.getData();
+            if (measureData != null) {
+                return measureData;
+            }
         }
-        return measureData;
+        LOG.warn("No measure found for metric [" + metric.getKey() + "] on resource [" + resourceKey + "]");
+        throw new MissingScmMeasureDataException();
     }
 }
