@@ -59,8 +59,8 @@ public class IssueHandler implements org.sonar.api.issue.IssueHandler {
                 this.assignIssue(context, issue);
             } catch (final IssueHandlerPluginException e) {
                 LOG.warn("Unable to assign issue [" + issue.key() + "]");
-            } catch (final Exception t) {
-                LOG.error("Error assigning issue [" + issue.key() + "]", t);
+            } catch (final Exception e) {
+                LOG.error("Error assigning issue [" + issue.key() + "]", e);
             }
         }
     }
