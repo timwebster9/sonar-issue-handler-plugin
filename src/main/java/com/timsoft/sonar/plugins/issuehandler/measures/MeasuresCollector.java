@@ -28,6 +28,7 @@ import org.sonar.api.batch.DecoratorContext;
 import org.sonar.api.config.Settings;
 import org.sonar.api.measures.CoreMetrics;
 import org.sonar.api.measures.Measure;
+import org.sonar.api.measures.MeasureUtils;
 import org.sonar.api.measures.Metric;
 import org.sonar.api.resources.Project;
 import org.sonar.api.resources.Resource;
@@ -81,11 +82,8 @@ public class MeasuresCollector implements Decorator {
 
     private String getMeasureData(final DecoratorContext decoratorContext, final Metric metric, final String resourceKey) throws MissingScmMeasureDataException {
         final Measure measure = decoratorContext.getMeasure(metric);
-        if (measure != null) {
-            final String measureData = measure.getData();
-            if (measureData != null) {
-                return measureData;
-            }
+        if (MeasureUtils.hasData(measure)) {
+            return measure.getData();
         }
         LOG.warn("No measure found for metric [" + metric.getKey() + "] on resource [" + resourceKey + "]");
         throw new MissingScmMeasureDataException();

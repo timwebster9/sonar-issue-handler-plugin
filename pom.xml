@@ -127,7 +127,7 @@
                                 <resource>
                                     <directory>target</directory>
                                         <includes>
-                                            <include>${artifactId}-${version}.jar</include>
+                                            <include>${project.artifactId}-${project.version}.jar</include>
                                         </includes>
                                 </resource>
                             </resources>
