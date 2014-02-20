@@ -28,9 +28,6 @@ import org.sonar.api.issue.Issue;
 import org.sonar.api.user.User;
 import org.sonar.api.user.UserFinder;
 
-/**
- * Created by twebster on 24/01/14.
- */
 public class IssueHandler implements org.sonar.api.issue.IssueHandler {
 
     private static final Logger LOG = LoggerFactory.getLogger(IssueHandler.class);
@@ -57,7 +54,7 @@ public class IssueHandler implements org.sonar.api.issue.IssueHandler {
             LOG.debug("Found new issue [" + issue.key() + "]");
             try {
                 this.assignIssue(context, issue);
-            } catch (final IssueHandlerPluginException e) {
+            } catch (final IssueHandlerPluginException pluginException) {
                 LOG.warn("Unable to assign issue [" + issue.key() + "]");
             } catch (final Exception e) {
                 LOG.error("Error assigning issue [" + issue.key() + "]", e);
@@ -68,18 +65,18 @@ public class IssueHandler implements org.sonar.api.issue.IssueHandler {
     private void assignIssue(final Context context, final Issue issue) throws IssueHandlerPluginException {
 
         final String author = blame.getScmAuthorForIssue(issue);
+        final User assignee;
 
         if (author == null) {
             LOG.debug("No author found for issue [" + issue.key() + " component [" + issue.componentKey() + "]");
-            final User assignee = assign.getAssignee();
-            LOG.info("Assigning issue [" + issue.key() + "] to assignee [" + assignee.login() + "]");
-            context.assign(assignee);
+            assignee = assign.getAssignee();
         } else {
             LOG.debug("Found SCM author [" + author + "]");
-            final User assignee = assign.getAssignee(author);
-            LOG.info("Assigning issue [" + issue.key() + "] to assignee [" + assignee.login() + "]");
-            context.assign(assignee);
+            assignee = assign.getAssignee(author);
         }
+
+        LOG.info("Assigning issue [" + issue.key() + "] to assignee [" + assignee.login() + "]");
+        context.assign(assignee);
     }
 
     private boolean shouldExecute() {

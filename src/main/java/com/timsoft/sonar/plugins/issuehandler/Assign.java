@@ -32,12 +32,12 @@ public class Assign {
 
     private static final Logger LOG = LoggerFactory.getLogger(Assign.class);
     private final Settings settings;
-    private final UserFinder userFinder;
+    private final Users users;
     private static final String OVERRIDE_NOT_FOUND_MSG = "Override assignee is NOT configured.";
 
     public Assign(final Settings settings, final UserFinder userFinder) {
         this.settings = settings;
-        this.userFinder = userFinder;
+        this.users = new Users(userFinder);
     }
 
     public User getAssignee(final String scmAuthor) throws IssueHandlerPluginException {
@@ -51,7 +51,7 @@ public class Assign {
         }
 
         try {
-            sonarUser = this.getSonarUser(scmAuthor);
+            sonarUser = this.users.getSonarUser(scmAuthor);
             return sonarUser;
         } catch (final SonarUserNotFoundException e) {
             LOG.debug("Sonar user not found: " + scmAuthor);
@@ -83,16 +83,6 @@ public class Assign {
 
     private User getConfiguredSonarUser(final String key) throws IssueHandlerPluginException {
         final String configuredUser = PluginUtils.getConfiguredSetting(settings, key);
-        return this.getSonarUser(configuredUser);
-    }
-
-    private User getSonarUser(final String userName) throws SonarUserNotFoundException {
-        final User sonarUser = this.userFinder.findByLogin(userName);
-        if (sonarUser == null) {
-            throw new SonarUserNotFoundException();
-        }
-
-        LOG.debug("Found Sonar user: " + sonarUser.login());
-        return sonarUser;
+        return this.users.getSonarUser(configuredUser);
     }
 }
