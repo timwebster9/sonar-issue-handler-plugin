@@ -63,18 +63,6 @@ public class UsersTest {
         assertThat(user).isSameAs(nonEmailUser);
     }
 
-    @Test
-    public void findSonarUserTwiceToUseCache() throws Exception {
-        when(userFinder.findByLogin(NON_EMAIL_USERNAME)).thenReturn(nonEmailUser);
-
-        final Users classUnderTest = new Users(userFinder);
-        User user = classUnderTest.getSonarUser(NON_EMAIL_USERNAME);
-        assertThat(user).isSameAs(nonEmailUser);
-
-        user = classUnderTest.getSonarUser(NON_EMAIL_USERNAME);
-        assertThat(user).isSameAs(nonEmailUser);
-    }
-
     @Test(expected = SonarUserNotFoundException.class)
     public void sonarUserNotFoundAnywhere() throws Exception {
         when(userFinder.findByLogin(NON_EMAIL_USERNAME)).thenReturn(null);
@@ -92,6 +80,20 @@ public class UsersTest {
         final Users classUnderTest = new Users(userFinder);
         final User user = classUnderTest.getSonarUser(EMAIL_USERNAME);
 
+        assertThat(user).isSameAs(this.emailUser);
+    }
+
+    @Test
+    public void findSonarUserAsEmailAddressTwiceToTestCache() throws SonarUserNotFoundException {
+        when(userFinder.findByLogin(EMAIL_USERNAME)).thenReturn(null);
+        when(userFinder.find(isA(UserQuery.class))).thenReturn(this.sonarUsers);
+        when(emailUser.email()).thenReturn(EMAIL_USERNAME);
+
+        final Users classUnderTest = new Users(userFinder);
+        User user = classUnderTest.getSonarUser(EMAIL_USERNAME);
+        assertThat(user).isSameAs(this.emailUser);
+
+        user = classUnderTest.getSonarUser(EMAIL_USERNAME);
         assertThat(user).isSameAs(this.emailUser);
     }
 
