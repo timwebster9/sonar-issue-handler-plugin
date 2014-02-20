@@ -40,6 +40,7 @@ import static org.mockito.Mockito.when;
 public class UsersTest {
 
     @Mock UserFinder userFinder;
+    @Mock User nonEmailUser;
     @Mock User emailUser;
 
     private static final String NON_EMAIL_USERNAME = "username";
@@ -51,6 +52,27 @@ public class UsersTest {
     public void before() {
         sonarUsers = new ArrayList<User>();
         sonarUsers.add(emailUser);
+    }
+
+    @Test
+    public void findSonarUser() throws Exception {
+        when(userFinder.findByLogin(NON_EMAIL_USERNAME)).thenReturn(nonEmailUser);
+
+        final Users classUnderTest = new Users(userFinder);
+        final User user = classUnderTest.getSonarUser(NON_EMAIL_USERNAME);
+        assertThat(user).isSameAs(nonEmailUser);
+    }
+
+    @Test
+    public void findSonarUserTwiceToUseCache() throws Exception {
+        when(userFinder.findByLogin(NON_EMAIL_USERNAME)).thenReturn(nonEmailUser);
+
+        final Users classUnderTest = new Users(userFinder);
+        User user = classUnderTest.getSonarUser(NON_EMAIL_USERNAME);
+        assertThat(user).isSameAs(nonEmailUser);
+
+        user = classUnderTest.getSonarUser(NON_EMAIL_USERNAME);
+        assertThat(user).isSameAs(nonEmailUser);
     }
 
     @Test(expected = SonarUserNotFoundException.class)
