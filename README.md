@@ -16,11 +16,11 @@ provided the email address is the same for the SCM and SonarQube accounts.
 
 Configuration:
 
-    - The plugin is configurable on a project level.
-    - Configurable items include:
-        - enable/disable the plugin
-        - default assignee if SCM author doesn't exist in SonarQube
-        - an 'override' assignee that is useful for testing so that other users are not spammed with notifications.
+The plugin is configurable on a project level.
+Configurable items include:
+    enable/disable the plugin
+    default assignee if SCM author doesn't exist in SonarQube
+    an 'override' assignee that is useful for testing so that other users are not spammed with notifications.
 
 This plugin was written using the SonarQube 4.1 API, and tested on Subversion 1.7 and Git.
 
