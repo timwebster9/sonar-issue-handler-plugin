@@ -21,7 +21,7 @@ This plugin was written using the SonarQube 4.1 API, and tested on Subversion 1.
 
 Future plans:
 
-associate issue with a configurable action plan
+associate issue with a configurable action plan (v4.3+)
 
 improve efficiency of SCM measure collection (only collect measures for resources that have new issues raised against them)
 
