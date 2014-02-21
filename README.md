@@ -19,6 +19,12 @@ The plugin is configurable on a project level.  Configurable items include: enab
 
 This plugin was written using the SonarQube 4.1 API, and tested on Subversion 1.7 and Git.
 
+Future plans:
+
+associate issue with a configurable action plan
+
+improve efficiency of SCM measure collection (only collect measures for resources that have new issues raised against them)
+
 
 
 
