@@ -32,7 +32,5 @@ public class IssueAssignPluginTest {
     assertThat(classUnderTest.getExtensions())
         .hasSize(2)
         .containsExactly(MeasuresCollector.class, IssueAssigner.class);
-
-
   }
 }

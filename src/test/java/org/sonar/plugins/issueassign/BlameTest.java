@@ -43,16 +43,11 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class BlameTest {
 
-  @Mock
-  private MeasuresCollector mockMeasuresCollector;
-  @Mock
-  private Issue mockIssue;
-  @Mock
-  private ScmMeasures scmMeasures;
-  @Mock
-  private Map resources;
-  @Mock
-  private Map authorMap;
+  @Mock private MeasuresCollector mockMeasuresCollector;
+  @Mock private Issue mockIssue;
+  @Mock private ScmMeasures scmMeasures;
+  @Mock private Map resources;
+  @Mock private Map authorMap;
 
   private static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZ";
   private static final String DATE1_STRING = "2013-01-31T12:12:12-0800";

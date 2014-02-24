@@ -33,10 +33,8 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class PluginUtilsTest {
 
-  @Mock
-  private Issue issue;
-  @Mock
-  private Settings settings;
+  @Mock private Issue issue;
+  @Mock private Settings settings;
 
   @Test
   public void testGetProjectKeyFromIssue() throws Exception {

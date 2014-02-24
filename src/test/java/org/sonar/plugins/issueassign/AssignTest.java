@@ -34,16 +34,11 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class AssignTest {
 
-  @Mock
-  private Settings mockSettings;
-  @Mock
-  private UserFinder mockUserFinder;
-  @Mock
-  private User overrideUser;
-  @Mock
-  private User scmAuthorUser;
-  @Mock
-  private User defaultUser;
+  @Mock private Settings mockSettings;
+  @Mock private UserFinder mockUserFinder;
+  @Mock private User overrideUser;
+  @Mock private User scmAuthorUser;
+  @Mock private User defaultUser;
 
   private static final String DEFAULT_ASSIGNEE = "defaultAssignee";
   private static final String OVERRIDE_ASSIGNEE = "overrideAssignee";

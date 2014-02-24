@@ -39,14 +39,10 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class ScmMeasuresTest {
 
-  @Mock
-  private DecoratorContext decoratorContext;
-  @Mock
-  private Measure authorPerLineMeasure;
-  @Mock
-  private Measure lastCommitDateTimeByLine;
-  @Mock
-  private Measure revisionsByLine;
+  @Mock private DecoratorContext decoratorContext;
+  @Mock private Measure authorPerLineMeasure;
+  @Mock private Measure lastCommitDateTimeByLine;
+  @Mock private Measure revisionsByLine;
 
   private static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZ";
   private static final String DATE1 = "2013-01-31T12:12:12-0800";

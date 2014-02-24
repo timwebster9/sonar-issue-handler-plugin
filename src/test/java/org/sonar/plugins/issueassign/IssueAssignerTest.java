@@ -37,22 +37,14 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class IssueAssignerTest {
 
-  @Mock
-  private IssueHandler.Context context;
-  @Mock
-  private Issue issue;
-  @Mock
-  private Settings settings;
-  @Mock
-  private Blame blame;
-  @Mock
-  private MeasuresCollector measuresCollector;
-  @Mock
-  private UserFinder userFinder;
-  @Mock
-  private Assign assign;
-  @Mock
-  private User assignee;
+  @Mock private IssueHandler.Context context;
+  @Mock private Issue issue;
+  @Mock private Settings settings;
+  @Mock private Blame blame;
+  @Mock private MeasuresCollector measuresCollector;
+  @Mock private UserFinder userFinder;
+  @Mock private Assign assign;
+  @Mock private User assignee;
 
   private static final String COMPONENT_KEY = "str1:str2:str3";
   private static final String PROJECT_KEY = "str1:str2";

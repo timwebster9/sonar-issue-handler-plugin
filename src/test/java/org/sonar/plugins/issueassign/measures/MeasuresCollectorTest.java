@@ -38,18 +38,12 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class MeasuresCollectorTest {
 
-  @Mock
-  private Settings settings;
-  @Mock
-  private Resource resource;
-  @Mock
-  private DecoratorContext decoratorContext;
-  @Mock
-  private Measure authorByLineMeasure;
-  @Mock
-  private Measure commitsByLineMeasure;
-  @Mock
-  private Measure revisionsByLineMeasure;
+  @Mock private Settings settings;
+  @Mock private Resource resource;
+  @Mock private DecoratorContext decoratorContext;
+  @Mock private Measure authorByLineMeasure;
+  @Mock private Measure commitsByLineMeasure;
+  @Mock private Measure revisionsByLineMeasure;
 
   private static final String EFFECTIVE_KEY = "effectiveKey";
   private static final String AUTHOR_MEASURE_DATA = "1=user1;2=user2";
