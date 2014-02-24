@@ -52,6 +52,7 @@ public class UsersTest {
   public void before() {
     sonarUsers = new ArrayList<User>();
     sonarUsers.add(emailUser);
+    sonarUsers.add(nonEmailUser);
   }
 
   @Test
@@ -76,6 +77,7 @@ public class UsersTest {
     when(userFinder.findByLogin(EMAIL_USERNAME)).thenReturn(null);
     when(userFinder.find(isA(UserQuery.class))).thenReturn(this.sonarUsers);
     when(emailUser.email()).thenReturn(EMAIL_USERNAME);
+    when(nonEmailUser.email()).thenReturn(null);
 
     final Users classUnderTest = new Users(userFinder);
     final User user = classUnderTest.getSonarUser(EMAIL_USERNAME);
@@ -88,6 +90,7 @@ public class UsersTest {
     when(userFinder.findByLogin(EMAIL_USERNAME)).thenReturn(null);
     when(userFinder.find(isA(UserQuery.class))).thenReturn(this.sonarUsers);
     when(emailUser.email()).thenReturn(EMAIL_USERNAME);
+    when(nonEmailUser.email()).thenReturn(null);
 
     final Users classUnderTest = new Users(userFinder);
     User user = classUnderTest.getSonarUser(EMAIL_USERNAME);
@@ -102,6 +105,7 @@ public class UsersTest {
     when(userFinder.findByLogin(EMAIL_USERNAME)).thenReturn(null);
     when(userFinder.find(isA(UserQuery.class))).thenReturn(this.sonarUsers);
     when(emailUser.email()).thenReturn(NON_MATCHING_EMAIL);
+    when(nonEmailUser.email()).thenReturn(null);
 
     final Users classUnderTest = new Users(userFinder);
     classUnderTest.getSonarUser(EMAIL_USERNAME);

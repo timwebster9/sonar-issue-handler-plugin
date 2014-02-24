@@ -35,7 +35,6 @@ public class Users {
 
   private static final Logger LOG = LoggerFactory.getLogger(Users.class);
   private final UserFinder userFinder;
-  private List<User> sonarUsers;
   private Map<String, User> emailToUserMap;
 
   public Users(final UserFinder userFinder) {
