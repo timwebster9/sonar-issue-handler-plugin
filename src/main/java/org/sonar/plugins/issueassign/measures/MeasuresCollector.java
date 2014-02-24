@@ -62,7 +62,7 @@ public class MeasuresCollector implements Decorator {
 
     public boolean shouldExecuteOnProject(final Project project) {
         final boolean isEnabled = this.settings.getBoolean(org.sonar.plugins.issueassign.IssueAssignPlugin.PROPERTY_ENABLED);
-        LOG.info("Issue Handler decorator is " + (isEnabled ? "ENABLED" : "DISABLED"));
+        LOG.info("Issue Assign Plugin is " + (isEnabled ? "ENABLED" : "DISABLED"));
         return isEnabled;
     }
 
