@@ -5,29 +5,29 @@
     <parent>
         <groupId>org.codehaus.sonar-plugins</groupId>
         <artifactId>parent</artifactId>
-        <version>15</version>
-        <relativePath>../parent</relativePath>
+        <version>18</version>
     </parent>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <sonar.buildVersion>4.1</sonar.buildVersion>
-        <sonar.pluginName>SonarQube Issue Handler</sonar.pluginName>
-        <jdk.min.version>1.5</jdk.min.version>
+        <sonar.pluginName>SonarQube Issue Assign Plugin</sonar.pluginName>
+        <jdk.min.version>1.6</jdk.min.version>
 <!--        <artifact.id>sonar-issue-handler-plugin</artifact.id>
         <version>0.1-SNAPSHOT</version>-->
     </properties>
 
-    <artifactId>sonar-issue-handler-plugin</artifactId>
+    <artifactId>sonar-issue-assign-plugin</artifactId>
     <packaging>sonar-plugin</packaging>
     <version>0.1-SNAPSHOT</version>
 
-    <name>SonarQube Issue Handler</name>
+    <name>SonarQube Issue Assign Plugin</name>
     <description>Assigns issues to Sonar users</description>
     <inceptionYear>2014</inceptionYear>
 
     <organization>
-        <name>timsoft</name>
+        <name>SonarSource</name>
+        <url>http://www.sonarsource.com</url>
     </organization>
     <licenses>
         <license>
@@ -87,7 +87,7 @@
                 <artifactId>sonar-packaging-maven-plugin</artifactId>
                 <extensions>true</extensions>
                 <configuration>
-                    <pluginClass>com.timsoft.sonar.plugins.issuehandler.IssueHandlerPlugin</pluginClass>
+                    <pluginClass>org.sonar.plugins.issueassign.IssueAssignPlugin</pluginClass>
                 </configuration>
             </plugin>
             <plugin>
