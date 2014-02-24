@@ -19,5 +19,5 @@
  */
 package org.sonar.plugins.issueassign.exception;
 
-public class IssueHandlerPluginException extends Exception {
+public class IssueAssignPluginException extends Exception {
 }

@@ -80,7 +80,7 @@ public class Users {
     for (final User user : sonarUsers) {
       final String email = user.email();
       if (StringUtils.isNotEmpty(email)) {
-        LOG.debug("Found user [" + user.login() + "] with email [" + email + "].");
+        LOG.debug("Caching user [" + user.login() + "] with email [" + email + "].");
         this.emailToUserMap.put(email, user);
       }
     }

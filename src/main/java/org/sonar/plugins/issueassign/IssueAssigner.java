@@ -26,7 +26,7 @@ import org.sonar.api.issue.Issue;
 import org.sonar.api.issue.IssueHandler;
 import org.sonar.api.user.User;
 import org.sonar.api.user.UserFinder;
-import org.sonar.plugins.issueassign.exception.IssueHandlerPluginException;
+import org.sonar.plugins.issueassign.exception.IssueAssignPluginException;
 import org.sonar.plugins.issueassign.measures.MeasuresCollector;
 
 public class IssueAssigner implements IssueHandler {
@@ -55,7 +55,7 @@ public class IssueAssigner implements IssueHandler {
       LOG.debug("Found new issue [" + issue.key() + "]");
       try {
         this.assignIssue(context, issue);
-      } catch (final IssueHandlerPluginException pluginException) {
+      } catch (final IssueAssignPluginException pluginException) {
         LOG.warn("Unable to assign issue [" + issue.key() + "]");
       } catch (final Exception e) {
         LOG.error("Error assigning issue [" + issue.key() + "]", e);
@@ -63,7 +63,7 @@ public class IssueAssigner implements IssueHandler {
     }
   }
 
-  private void assignIssue(final Context context, final Issue issue) throws IssueHandlerPluginException {
+  private void assignIssue(final Context context, final Issue issue) throws IssueAssignPluginException {
 
     final String author = blame.getScmAuthorForIssue(issue);
     final User assignee;

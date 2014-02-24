@@ -19,5 +19,5 @@
  */
 package org.sonar.plugins.issueassign.exception;
 
-public class MissingScmMeasureDataException extends IssueHandlerPluginException {
+public class MissingScmMeasureDataException extends IssueAssignPluginException {
 }

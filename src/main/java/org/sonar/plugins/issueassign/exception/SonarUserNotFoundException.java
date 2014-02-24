@@ -19,5 +19,5 @@
  */
 package org.sonar.plugins.issueassign.exception;
 
-public class SonarUserNotFoundException extends IssueHandlerPluginException {
+public class SonarUserNotFoundException extends IssueAssignPluginException {
 }

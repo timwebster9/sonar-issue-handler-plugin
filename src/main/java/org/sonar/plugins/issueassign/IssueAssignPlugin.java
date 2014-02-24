@@ -45,7 +45,7 @@ import java.util.List;
         type = PropertyType.STRING),
     @Property(key = IssueAssignPlugin.PROPERTY_ENABLED,
         name = "Enabled",
-        description = "Enable or disable the Issue Handler plugin.",
+        description = "Enable or disable the Issue Assign plugin.",
         project = true,
         type = PropertyType.BOOLEAN,
         defaultValue = "false")
@@ -54,7 +54,7 @@ public final class IssueAssignPlugin extends SonarPlugin {
 
   public static final String PROPERTY_DEFAULT_ASSIGNEE = "default.assignee";
   public static final String PROPERTY_OVERRIDE_ASSIGNEE = "override.assignee";
-  public static final String PROPERTY_ENABLED = "issuehandler.enabled";
+  public static final String PROPERTY_ENABLED = "issueassignplugin.enabled";
 
   public List getExtensions() {
     return Arrays.asList(MeasuresCollector.class,

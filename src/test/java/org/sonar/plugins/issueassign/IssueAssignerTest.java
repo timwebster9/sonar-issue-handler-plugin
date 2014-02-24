@@ -29,7 +29,7 @@ import org.sonar.api.issue.Issue;
 import org.sonar.api.issue.IssueHandler;
 import org.sonar.api.user.User;
 import org.sonar.api.user.UserFinder;
-import org.sonar.plugins.issueassign.exception.IssueHandlerPluginException;
+import org.sonar.plugins.issueassign.exception.IssueAssignPluginException;
 import org.sonar.plugins.issueassign.measures.MeasuresCollector;
 
 import static org.mockito.Mockito.when;
@@ -116,7 +116,7 @@ public class IssueAssignerTest {
     when(issue.isNew()).thenReturn(true);
     when(blame.getScmAuthorForIssue(issue)).thenReturn(SCM_AUTHOR);
     when(issue.key()).thenReturn(ISSUE_KEY);
-    when(assign.getAssignee(SCM_AUTHOR)).thenThrow(IssueHandlerPluginException.class);
+    when(assign.getAssignee(SCM_AUTHOR)).thenThrow(IssueAssignPluginException.class);
 
     final IssueHandler classUnderTest =
         new org.sonar.plugins.issueassign.IssueAssigner(measuresCollector, settings, userFinder);

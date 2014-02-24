@@ -19,5 +19,5 @@
  */
 package org.sonar.plugins.issueassign.exception;
 
-public class SettingNotConfiguredException extends IssueHandlerPluginException {
+public class SettingNotConfiguredException extends IssueAssignPluginException {
 }

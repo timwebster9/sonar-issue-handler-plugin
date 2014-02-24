@@ -1,4 +1,4 @@
-sonar-issue-handler-plugin
+sonar-issue-assign-plugin
 ==========================
 
 This plugin will automatically assign new issues raised in the current analysis to the SCM author responsible
