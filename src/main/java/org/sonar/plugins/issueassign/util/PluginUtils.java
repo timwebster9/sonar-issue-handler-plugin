@@ -28,24 +28,24 @@ import org.sonar.plugins.issueassign.exception.SettingNotConfiguredException;
 
 public final class PluginUtils {
 
-    private static final Logger LOG = LoggerFactory.getLogger(PluginUtils.class);
-    
-    private PluginUtils(){
-    }
+  private static final Logger LOG = LoggerFactory.getLogger(PluginUtils.class);
 
-    public static String getProjectKeyFromIssue(final Issue issue) {
-        final String[] keyComponents = issue.componentKey().split(":");
-        final String projectKey = keyComponents[0] + ":" + keyComponents[1];
-        LOG.debug("Project key for issue [" + issue.key() + "] is [" + projectKey + "]");
-        return projectKey;
-    }
+  private PluginUtils() {
+  }
 
-    public static String getConfiguredSetting(final Settings settings, final String key) throws SettingNotConfiguredException {
-        final String setting =  settings.getString(key);
-        if (StringUtils.isEmpty(setting)) {
-            LOG.debug("Plugin setting [" + key + "] not configured.");
-            throw new SettingNotConfiguredException();
-        }
-        return setting;
+  public static String getProjectKeyFromIssue(final Issue issue) {
+    final String[] keyComponents = issue.componentKey().split(":");
+    final String projectKey = keyComponents[0] + ":" + keyComponents[1];
+    LOG.debug("Project key for issue [" + issue.key() + "] is [" + projectKey + "]");
+    return projectKey;
+  }
+
+  public static String getConfiguredSetting(final Settings settings, final String key) throws SettingNotConfiguredException {
+    final String setting = settings.getString(key);
+    if (StringUtils.isEmpty(setting)) {
+      LOG.debug("Plugin setting [" + key + "] not configured.");
+      throw new SettingNotConfiguredException();
     }
+    return setting;
+  }
 }

@@ -34,136 +34,141 @@ import org.sonar.plugins.issueassign.measures.MeasuresCollector;
 
 import static org.mockito.Mockito.when;
 
-/**
- * Created by twebster on 25/01/14.
- */
 @RunWith(MockitoJUnitRunner.class)
 public class IssueAssignerTest {
 
-    @Mock private IssueHandler.Context context;
-    @Mock private Issue issue;
-    @Mock private Settings settings;
-    @Mock private Blame blame;
-    @Mock private MeasuresCollector measuresCollector;
-    @Mock private UserFinder userFinder;
-    @Mock private Assign assign;
-    @Mock private User assignee;
+  @Mock
+  private IssueHandler.Context context;
+  @Mock
+  private Issue issue;
+  @Mock
+  private Settings settings;
+  @Mock
+  private Blame blame;
+  @Mock
+  private MeasuresCollector measuresCollector;
+  @Mock
+  private UserFinder userFinder;
+  @Mock
+  private Assign assign;
+  @Mock
+  private User assignee;
 
-    private static final String COMPONENT_KEY = "str1:str2:str3";
-    private static final String PROJECT_KEY = "str1:str2";
-    private static final String SCM_AUTHOR = "author";
-    private static final String ISSUE_KEY = "issueKey";
+  private static final String COMPONENT_KEY = "str1:str2:str3";
+  private static final String PROJECT_KEY = "str1:str2";
+  private static final String SCM_AUTHOR = "author";
+  private static final String ISSUE_KEY = "issueKey";
 
-    @Test
-    public void testOnIssueNotNewIssue() throws Exception {
-        when(context.issue()).thenReturn(issue);
-        when(issue.componentKey()).thenReturn(COMPONENT_KEY);
-        when(settings.getBoolean(IssueAssignPlugin.PROPERTY_ENABLED)).thenReturn(true);
-        when(issue.isNew()).thenReturn(false);
+  @Test
+  public void testOnIssueNotNewIssue() throws Exception {
+    when(context.issue()).thenReturn(issue);
+    when(issue.componentKey()).thenReturn(COMPONENT_KEY);
+    when(settings.getBoolean(IssueAssignPlugin.PROPERTY_ENABLED)).thenReturn(true);
+    when(issue.isNew()).thenReturn(false);
 
-        final IssueHandler classUnderTest =
-                new org.sonar.plugins.issueassign.IssueAssigner(measuresCollector, settings, userFinder);
-        Whitebox.setInternalState(classUnderTest, "blame", blame);
-        Whitebox.setInternalState(classUnderTest, "assign", assign);
-        classUnderTest.onIssue(context);
-    }
+    final IssueHandler classUnderTest =
+        new org.sonar.plugins.issueassign.IssueAssigner(measuresCollector, settings, userFinder);
+    Whitebox.setInternalState(classUnderTest, "blame", blame);
+    Whitebox.setInternalState(classUnderTest, "assign", assign);
+    classUnderTest.onIssue(context);
+  }
 
-    @Test
-    public void testOnIssueWithScmAuthor() throws Exception {
+  @Test
+  public void testOnIssueWithScmAuthor() throws Exception {
 
-        when(context.issue()).thenReturn(issue);
-        when(issue.componentKey()).thenReturn(COMPONENT_KEY);
-        when(settings.getBoolean(IssueAssignPlugin.PROPERTY_ENABLED)).thenReturn(true);
-        when(issue.isNew()).thenReturn(true);
-        when(blame.getScmAuthorForIssue(issue)).thenReturn(SCM_AUTHOR);
-        when(issue.key()).thenReturn(ISSUE_KEY);
-        when(assign.getAssignee(SCM_AUTHOR)).thenReturn(assignee);
+    when(context.issue()).thenReturn(issue);
+    when(issue.componentKey()).thenReturn(COMPONENT_KEY);
+    when(settings.getBoolean(IssueAssignPlugin.PROPERTY_ENABLED)).thenReturn(true);
+    when(issue.isNew()).thenReturn(true);
+    when(blame.getScmAuthorForIssue(issue)).thenReturn(SCM_AUTHOR);
+    when(issue.key()).thenReturn(ISSUE_KEY);
+    when(assign.getAssignee(SCM_AUTHOR)).thenReturn(assignee);
 
-        context.assign(assignee);
+    context.assign(assignee);
 
-        final IssueHandler classUnderTest =
-                new org.sonar.plugins.issueassign.IssueAssigner(measuresCollector, settings, userFinder);
-        Whitebox.setInternalState(classUnderTest, "blame", blame);
-        Whitebox.setInternalState(classUnderTest, "assign", assign);
+    final IssueHandler classUnderTest =
+        new org.sonar.plugins.issueassign.IssueAssigner(measuresCollector, settings, userFinder);
+    Whitebox.setInternalState(classUnderTest, "blame", blame);
+    Whitebox.setInternalState(classUnderTest, "assign", assign);
 
-        classUnderTest.onIssue(context);
-    }
+    classUnderTest.onIssue(context);
+  }
 
-    @Test
-    public void testOnIssueWithRuntimeException() throws Exception {
+  @Test
+  public void testOnIssueWithRuntimeException() throws Exception {
 
-        when(context.issue()).thenReturn(issue);
-        when(issue.componentKey()).thenReturn(COMPONENT_KEY);
-        when(settings.getBoolean(IssueAssignPlugin.PROPERTY_ENABLED)).thenReturn(true);
-        when(issue.isNew()).thenReturn(true);
-        when(blame.getScmAuthorForIssue(issue)).thenReturn(SCM_AUTHOR);
-        when(issue.key()).thenReturn(ISSUE_KEY);
-        when(assign.getAssignee(SCM_AUTHOR)).thenThrow(RuntimeException.class);
+    when(context.issue()).thenReturn(issue);
+    when(issue.componentKey()).thenReturn(COMPONENT_KEY);
+    when(settings.getBoolean(IssueAssignPlugin.PROPERTY_ENABLED)).thenReturn(true);
+    when(issue.isNew()).thenReturn(true);
+    when(blame.getScmAuthorForIssue(issue)).thenReturn(SCM_AUTHOR);
+    when(issue.key()).thenReturn(ISSUE_KEY);
+    when(assign.getAssignee(SCM_AUTHOR)).thenThrow(RuntimeException.class);
 
-        context.assign(assignee);
+    context.assign(assignee);
 
-        final IssueHandler classUnderTest =
-                new org.sonar.plugins.issueassign.IssueAssigner(measuresCollector, settings, userFinder);
-        Whitebox.setInternalState(classUnderTest, "blame", blame);
-        Whitebox.setInternalState(classUnderTest, "assign", assign);
+    final IssueHandler classUnderTest =
+        new org.sonar.plugins.issueassign.IssueAssigner(measuresCollector, settings, userFinder);
+    Whitebox.setInternalState(classUnderTest, "blame", blame);
+    Whitebox.setInternalState(classUnderTest, "assign", assign);
 
-        classUnderTest.onIssue(context);
-    }
+    classUnderTest.onIssue(context);
+  }
 
-    @Test
-    public void testOnIssueWithScmAuthorWithAssignException() throws Exception {
+  @Test
+  public void testOnIssueWithScmAuthorWithAssignException() throws Exception {
 
-        when(context.issue()).thenReturn(issue);
-        when(issue.componentKey()).thenReturn(COMPONENT_KEY);
-        when(settings.getBoolean(IssueAssignPlugin.PROPERTY_ENABLED)).thenReturn(true);
-        when(issue.isNew()).thenReturn(true);
-        when(blame.getScmAuthorForIssue(issue)).thenReturn(SCM_AUTHOR);
-        when(issue.key()).thenReturn(ISSUE_KEY);
-        when(assign.getAssignee(SCM_AUTHOR)).thenThrow(IssueHandlerPluginException.class);
+    when(context.issue()).thenReturn(issue);
+    when(issue.componentKey()).thenReturn(COMPONENT_KEY);
+    when(settings.getBoolean(IssueAssignPlugin.PROPERTY_ENABLED)).thenReturn(true);
+    when(issue.isNew()).thenReturn(true);
+    when(blame.getScmAuthorForIssue(issue)).thenReturn(SCM_AUTHOR);
+    when(issue.key()).thenReturn(ISSUE_KEY);
+    when(assign.getAssignee(SCM_AUTHOR)).thenThrow(IssueHandlerPluginException.class);
 
-        final IssueHandler classUnderTest =
-                new org.sonar.plugins.issueassign.IssueAssigner(measuresCollector, settings, userFinder);
-        Whitebox.setInternalState(classUnderTest, "blame", blame);
-        Whitebox.setInternalState(classUnderTest, "assign", assign);
+    final IssueHandler classUnderTest =
+        new org.sonar.plugins.issueassign.IssueAssigner(measuresCollector, settings, userFinder);
+    Whitebox.setInternalState(classUnderTest, "blame", blame);
+    Whitebox.setInternalState(classUnderTest, "assign", assign);
 
-        classUnderTest.onIssue(context);
-    }
+    classUnderTest.onIssue(context);
+  }
 
-    @Test
-    public void testOnIssueWithProjectExcluded() throws Exception {
+  @Test
+  public void testOnIssueWithProjectExcluded() throws Exception {
 
-        when(context.issue()).thenReturn(issue);
-        when(issue.componentKey()).thenReturn(COMPONENT_KEY);
-        when(settings.getBoolean(IssueAssignPlugin.PROPERTY_ENABLED)).thenReturn(false);
+    when(context.issue()).thenReturn(issue);
+    when(issue.componentKey()).thenReturn(COMPONENT_KEY);
+    when(settings.getBoolean(IssueAssignPlugin.PROPERTY_ENABLED)).thenReturn(false);
 
-        context.assign(assignee);
+    context.assign(assignee);
 
-        final IssueHandler classUnderTest =
-                new org.sonar.plugins.issueassign.IssueAssigner(measuresCollector, settings, userFinder);
-        Whitebox.setInternalState(classUnderTest, "blame", blame);
-        Whitebox.setInternalState(classUnderTest, "assign", assign);
+    final IssueHandler classUnderTest =
+        new org.sonar.plugins.issueassign.IssueAssigner(measuresCollector, settings, userFinder);
+    Whitebox.setInternalState(classUnderTest, "blame", blame);
+    Whitebox.setInternalState(classUnderTest, "assign", assign);
 
-        classUnderTest.onIssue(context);
-    }
+    classUnderTest.onIssue(context);
+  }
 
-    @Test
-    public void testOnIssueWithNoScmMeasureFoundForAuthor() throws Exception {
+  @Test
+  public void testOnIssueWithNoScmMeasureFoundForAuthor() throws Exception {
 
-        when(context.issue()).thenReturn(issue);
-        when(issue.componentKey()).thenReturn(COMPONENT_KEY);
-        when(settings.getBoolean(IssueAssignPlugin.PROPERTY_ENABLED)).thenReturn(true);
-        when(issue.isNew()).thenReturn(true);
-        when(blame.getScmAuthorForIssue(issue)).thenReturn(null);
-        when(issue.key()).thenReturn(ISSUE_KEY);
-        when(assign.getAssignee()).thenReturn(assignee);
+    when(context.issue()).thenReturn(issue);
+    when(issue.componentKey()).thenReturn(COMPONENT_KEY);
+    when(settings.getBoolean(IssueAssignPlugin.PROPERTY_ENABLED)).thenReturn(true);
+    when(issue.isNew()).thenReturn(true);
+    when(blame.getScmAuthorForIssue(issue)).thenReturn(null);
+    when(issue.key()).thenReturn(ISSUE_KEY);
+    when(assign.getAssignee()).thenReturn(assignee);
 
-        context.assign(assignee);
+    context.assign(assignee);
 
-        final IssueHandler classUnderTest =
-                new org.sonar.plugins.issueassign.IssueAssigner(measuresCollector, settings, userFinder);
-        Whitebox.setInternalState(classUnderTest, "blame", blame);
-        Whitebox.setInternalState(classUnderTest, "assign", assign);
+    final IssueHandler classUnderTest =
+        new org.sonar.plugins.issueassign.IssueAssigner(measuresCollector, settings, userFinder);
+    Whitebox.setInternalState(classUnderTest, "blame", blame);
+    Whitebox.setInternalState(classUnderTest, "assign", assign);
 
-        classUnderTest.onIssue(context);
-    }
+    classUnderTest.onIssue(context);
+  }
 }

@@ -17,7 +17,7 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
- package org.sonar.plugins.issueassign;
+package org.sonar.plugins.issueassign;
 
 import org.sonar.api.Properties;
 import org.sonar.api.Property;
@@ -32,32 +32,32 @@ import java.util.List;
  * Main plugin class
  */
 @Properties({
-        @Property(key = IssueAssignPlugin.PROPERTY_DEFAULT_ASSIGNEE,
-                  name = "Default Assignee",
-                  description = "Sonar user to whom issues will be assigned if the original " +
-                                "SCM author is not available in SonarQube.",
-                  project = true,
-                  type = PropertyType.STRING),
-        @Property(key = IssueAssignPlugin.PROPERTY_OVERRIDE_ASSIGNEE,
-                  name = "Override Assignee",
-                  description = "Sonar user to whom all issues will be assigned, if configured.",
-                  project = true,
-                  type = PropertyType.STRING),
-        @Property(key = IssueAssignPlugin.PROPERTY_ENABLED,
-                  name = "Enabled",
-                  description = "Enable or disable the Issue Handler plugin.",
-                  project = true,
-                  type = PropertyType.BOOLEAN,
-                  defaultValue = "false")
+    @Property(key = IssueAssignPlugin.PROPERTY_DEFAULT_ASSIGNEE,
+        name = "Default Assignee",
+        description = "Sonar user to whom issues will be assigned if the original " +
+            "SCM author is not available in SonarQube.",
+        project = true,
+        type = PropertyType.STRING),
+    @Property(key = IssueAssignPlugin.PROPERTY_OVERRIDE_ASSIGNEE,
+        name = "Override Assignee",
+        description = "Sonar user to whom all issues will be assigned, if configured.",
+        project = true,
+        type = PropertyType.STRING),
+    @Property(key = IssueAssignPlugin.PROPERTY_ENABLED,
+        name = "Enabled",
+        description = "Enable or disable the Issue Handler plugin.",
+        project = true,
+        type = PropertyType.BOOLEAN,
+        defaultValue = "false")
 })
 public final class IssueAssignPlugin extends SonarPlugin {
 
-    public static final String PROPERTY_DEFAULT_ASSIGNEE = "default.assignee";
-    public static final String PROPERTY_OVERRIDE_ASSIGNEE = "override.assignee";
-    public static final String PROPERTY_ENABLED = "issuehandler.enabled";
+  public static final String PROPERTY_DEFAULT_ASSIGNEE = "default.assignee";
+  public static final String PROPERTY_OVERRIDE_ASSIGNEE = "override.assignee";
+  public static final String PROPERTY_ENABLED = "issuehandler.enabled";
 
-    public List getExtensions() {
-      return Arrays.asList(MeasuresCollector.class,
-                           IssueAssigner.class);
-    }
+  public List getExtensions() {
+    return Arrays.asList(MeasuresCollector.class,
+        IssueAssigner.class);
+  }
 }

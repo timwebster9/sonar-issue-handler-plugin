@@ -19,7 +19,7 @@
  */
 package org.sonar.plugins.issueassign;
 
-import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sonar.api.user.User;
@@ -27,56 +27,68 @@ import org.sonar.api.user.UserFinder;
 import org.sonar.api.user.UserQuery;
 import org.sonar.plugins.issueassign.exception.SonarUserNotFoundException;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Users {
 
-    private static final Logger LOG = LoggerFactory.getLogger(Users.class);
-    private final UserFinder userFinder;
-    private List<User> sonarUsers;
+  private static final Logger LOG = LoggerFactory.getLogger(Users.class);
+  private final UserFinder userFinder;
+  private List<User> sonarUsers;
+  private Map<String, User> emailToUserMap;
 
-    public Users(final UserFinder userFinder) {
-        this.userFinder = userFinder;
+  public Users(final UserFinder userFinder) {
+    this.userFinder = userFinder;
+  }
+
+  public User getSonarUser(final String userName) throws SonarUserNotFoundException {
+
+    final User sonarUser = this.userFinder.findByLogin(userName);
+    if (sonarUser == null) {
+      if (isEmailAddress(userName)) {
+        LOG.debug("SCM author is an email address, trying lookup by email...");
+        return this.getSonarUserByEmail(userName);
+      }
+      throw new SonarUserNotFoundException();
     }
 
-    public User getSonarUser(final String userName) throws SonarUserNotFoundException {
+    LOG.debug("Found Sonar user: " + sonarUser.login());
+    return sonarUser;
+  }
 
-        final User sonarUser = this.userFinder.findByLogin(userName);
-        if (sonarUser == null) {
-            if (isEmailAddress(userName)) {
-                LOG.debug("SCM author is an email address, trying lookup by email...");
-                return this.getSonarUserByEmail(userName);
-            }
-            throw new SonarUserNotFoundException();
-        }
+  // a cheap solution, but may be enough.
+  private boolean isEmailAddress(final String userName) {
+    return userName.contains("@");
+  }
 
-        LOG.debug("Found Sonar user: " + sonarUser.login());
-        return sonarUser;
+  private User getSonarUserByEmail(final String email) throws SonarUserNotFoundException {
+    if (this.emailToUserMap == null) {
+      this.initialiseUserMap();
     }
 
-    // a cheap solution, but may be enough.
-    private boolean isEmailAddress(final String userName) {
-        return userName.contains("@");
+    final User user = this.emailToUserMap.get(email);
+    if (user == null) {
+      throw new SonarUserNotFoundException();
     }
+    return user;
+  }
 
-    private User getSonarUserByEmail(final String email) throws SonarUserNotFoundException {
-        final List<User> allUsers = this.getAllSonarUsers();
-        for (final User user : allUsers) {
-            if (email.equals(user.email())) {
-                LOG.debug("Found Sonar user using email address: [" + email + "]");
-                return user;
-            }
-        }
+  private void initialiseUserMap() {
+    this.emailToUserMap = new HashMap<String, User>();
+    final List<User> sonarUsers = this.getAllSonarUsers();
 
-        throw new SonarUserNotFoundException();
+    for (final User user : sonarUsers) {
+      final String email = user.email();
+      if (StringUtils.isNotEmpty(email)) {
+        LOG.debug("Found user [" + user.login() + "] with email [" + email + "].");
+        this.emailToUserMap.put(email, user);
+      }
     }
+  }
 
-    private List<User> getAllSonarUsers() {
-        if (CollectionUtils.isEmpty(this.sonarUsers)) {
-            final UserQuery userQuery = UserQuery.builder().build();
-            this.sonarUsers = this.userFinder.find(userQuery);
-            LOG.debug("Found [" + this.sonarUsers.size() + "] sonar users in the system");
-        }
-        return this.sonarUsers;
-    }
+  private List<User> getAllSonarUsers() {
+    final UserQuery userQuery = UserQuery.builder().build();
+    return this.userFinder.find(userQuery);
+  }
 }

@@ -24,19 +24,15 @@ import org.sonar.plugins.issueassign.measures.MeasuresCollector;
 
 import static org.fest.assertions.api.Assertions.assertThat;
 
-
-/**
- * Created by twebster on 25/01/14.
- */
 public class IssueAssignPluginTest {
 
-    @Test
-    public void testGetExtensions() throws Exception {
-        final IssueAssignPlugin classUnderTest = new IssueAssignPlugin();
-        assertThat(classUnderTest.getExtensions())
-                .hasSize(2)
-                .containsExactly(MeasuresCollector.class, IssueAssigner.class);
+  @Test
+  public void testGetExtensions() throws Exception {
+    final IssueAssignPlugin classUnderTest = new IssueAssignPlugin();
+    assertThat(classUnderTest.getExtensions())
+        .hasSize(2)
+        .containsExactly(MeasuresCollector.class, IssueAssigner.class);
 
 
-    }
+  }
 }

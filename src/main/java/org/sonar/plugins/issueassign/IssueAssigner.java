@@ -31,56 +31,56 @@ import org.sonar.plugins.issueassign.measures.MeasuresCollector;
 
 public class IssueAssigner implements IssueHandler {
 
-    private static final Logger LOG = LoggerFactory.getLogger(IssueAssigner.class);
-    private final Settings settings;
-    private final Blame blame;
-    private final Assign assign;
+  private static final Logger LOG = LoggerFactory.getLogger(IssueAssigner.class);
+  private final Settings settings;
+  private final Blame blame;
+  private final Assign assign;
 
-    public IssueAssigner(final MeasuresCollector measuresCollector, final Settings settings, final UserFinder userFinder) {
-        this.blame = new Blame(measuresCollector);
-        this.assign = new Assign(settings, userFinder);
-        this.settings = settings;
+  public IssueAssigner(final MeasuresCollector measuresCollector, final Settings settings, final UserFinder userFinder) {
+    this.blame = new Blame(measuresCollector);
+    this.assign = new Assign(settings, userFinder);
+    this.settings = settings;
+  }
+
+  public void onIssue(final Context context) {
+
+    if (!shouldExecute()) {
+      return;
     }
 
-    public void onIssue(final Context context) {
+    final Issue issue = context.issue();
 
-        if (!shouldExecute()) {
-            return;
-        }
+    //TODO not sure this check is necessary
+    if (issue.isNew()) {
+      LOG.debug("Found new issue [" + issue.key() + "]");
+      try {
+        this.assignIssue(context, issue);
+      } catch (final IssueHandlerPluginException pluginException) {
+        LOG.warn("Unable to assign issue [" + issue.key() + "]");
+      } catch (final Exception e) {
+        LOG.error("Error assigning issue [" + issue.key() + "]", e);
+      }
+    }
+  }
 
-        final Issue issue = context.issue();
+  private void assignIssue(final Context context, final Issue issue) throws IssueHandlerPluginException {
 
-        //TODO not sure this check is necessary
-        if (issue.isNew()) {
-            LOG.debug("Found new issue [" + issue.key() + "]");
-            try {
-                this.assignIssue(context, issue);
-            } catch (final IssueHandlerPluginException pluginException) {
-                LOG.warn("Unable to assign issue [" + issue.key() + "]");
-            } catch (final Exception e) {
-                LOG.error("Error assigning issue [" + issue.key() + "]", e);
-            }
-        }
+    final String author = blame.getScmAuthorForIssue(issue);
+    final User assignee;
+
+    if (author == null) {
+      LOG.debug("No author found for issue [" + issue.key() + " component [" + issue.componentKey() + "]");
+      assignee = assign.getAssignee();
+    } else {
+      LOG.debug("Found SCM author [" + author + "]");
+      assignee = assign.getAssignee(author);
     }
 
-    private void assignIssue(final Context context, final Issue issue) throws IssueHandlerPluginException {
+    LOG.info("Assigning issue [" + issue.key() + "] to assignee [" + assignee.login() + "]");
+    context.assign(assignee);
+  }
 
-        final String author = blame.getScmAuthorForIssue(issue);
-        final User assignee;
-
-        if (author == null) {
-            LOG.debug("No author found for issue [" + issue.key() + " component [" + issue.componentKey() + "]");
-            assignee = assign.getAssignee();
-        } else {
-            LOG.debug("Found SCM author [" + author + "]");
-            assignee = assign.getAssignee(author);
-        }
-
-        LOG.info("Assigning issue [" + issue.key() + "] to assignee [" + assignee.login() + "]");
-        context.assign(assignee);
-    }
-
-    private boolean shouldExecute() {
-        return this.settings.getBoolean(IssueAssignPlugin.PROPERTY_ENABLED);
-    }
+  private boolean shouldExecute() {
+    return this.settings.getBoolean(IssueAssignPlugin.PROPERTY_ENABLED);
+  }
 }

@@ -38,53 +38,53 @@ import java.util.Map;
 
 public class MeasuresCollector implements Decorator {
 
-    private static final Logger LOG = LoggerFactory.getLogger(MeasuresCollector.class);
-    private final Map<String, ScmMeasures> resourceScmMeasures = new HashMap<String, ScmMeasures>();
-    private final Settings settings;
+  private static final Logger LOG = LoggerFactory.getLogger(MeasuresCollector.class);
+  private final Map<String, ScmMeasures> resourceScmMeasures = new HashMap<String, ScmMeasures>();
+  private final Settings settings;
 
-    public MeasuresCollector(final Settings settings) {
-        this.settings = settings;
+  public MeasuresCollector(final Settings settings) {
+    this.settings = settings;
+  }
+
+  public void decorate(final Resource resource, final DecoratorContext decoratorContext) {
+
+    if (ResourceUtils.isFile(resource)) {
+      try {
+        final ScmMeasures scmMeasures = this.getMeasures(resource.getEffectiveKey(), decoratorContext);
+        resourceScmMeasures.put(resource.getEffectiveKey(), scmMeasures);
+      } catch (final MissingScmMeasureDataException e) {
+        LOG.warn("SCM Measures not collected for resource [" + resource.getEffectiveKey() + "]");
+      } catch (final Exception e) {
+        LOG.error("Error collecting measures for resource [" + resource.getEffectiveKey() + "]", e);
+      }
     }
+  }
 
-    public void decorate(final Resource resource, final DecoratorContext decoratorContext) {
+  public boolean shouldExecuteOnProject(final Project project) {
+    final boolean isEnabled = this.settings.getBoolean(org.sonar.plugins.issueassign.IssueAssignPlugin.PROPERTY_ENABLED);
+    LOG.info("Issue Assign Plugin is " + (isEnabled ? "ENABLED" : "DISABLED"));
+    return isEnabled;
+  }
 
-        if (ResourceUtils.isFile(resource)) {
-            try {
-                final ScmMeasures scmMeasures = this.getMeasures(resource.getEffectiveKey(), decoratorContext);
-                resourceScmMeasures.put(resource.getEffectiveKey(), scmMeasures);
-            } catch (final MissingScmMeasureDataException e) {
-                LOG.warn("SCM Measures not collected for resource [" + resource.getEffectiveKey() + "]");
-            } catch (final Exception e) {
-                LOG.error("Error collecting measures for resource [" + resource.getEffectiveKey() + "]", e);
-            }
-        }
+  public Map<String, ScmMeasures> getResources() {
+    return this.resourceScmMeasures;
+  }
+
+  private ScmMeasures getMeasures(final String resourceKey, final DecoratorContext decoratorContext) throws MissingScmMeasureDataException {
+    final String authorsByLineMeasureData = this.getMeasureData(decoratorContext, CoreMetrics.SCM_AUTHORS_BY_LINE, resourceKey);
+    final String lastCommitByLineMeasureData = this.getMeasureData(decoratorContext, CoreMetrics.SCM_LAST_COMMIT_DATETIMES_BY_LINE, resourceKey);
+    final String revisionsByLineMeasureData = this.getMeasureData(decoratorContext, CoreMetrics.SCM_REVISIONS_BY_LINE, resourceKey);
+
+    return new ScmMeasures(resourceKey, authorsByLineMeasureData,
+        lastCommitByLineMeasureData, revisionsByLineMeasureData);
+  }
+
+  private String getMeasureData(final DecoratorContext decoratorContext, final Metric metric, final String resourceKey) throws MissingScmMeasureDataException {
+    final Measure measure = decoratorContext.getMeasure(metric);
+    if (MeasureUtils.hasData(measure)) {
+      return measure.getData();
     }
-
-    public boolean shouldExecuteOnProject(final Project project) {
-        final boolean isEnabled = this.settings.getBoolean(org.sonar.plugins.issueassign.IssueAssignPlugin.PROPERTY_ENABLED);
-        LOG.info("Issue Assign Plugin is " + (isEnabled ? "ENABLED" : "DISABLED"));
-        return isEnabled;
-    }
-
-    public Map<String, ScmMeasures> getResources() {
-        return this.resourceScmMeasures;
-    }
-
-    private ScmMeasures getMeasures(final String resourceKey, final DecoratorContext decoratorContext) throws MissingScmMeasureDataException {
-        final String authorsByLineMeasureData = this.getMeasureData(decoratorContext, CoreMetrics.SCM_AUTHORS_BY_LINE, resourceKey);
-        final String lastCommitByLineMeasureData = this.getMeasureData(decoratorContext, CoreMetrics.SCM_LAST_COMMIT_DATETIMES_BY_LINE, resourceKey);
-        final String revisionsByLineMeasureData = this.getMeasureData(decoratorContext, CoreMetrics.SCM_REVISIONS_BY_LINE, resourceKey);
-
-        return new ScmMeasures(resourceKey, authorsByLineMeasureData,
-                lastCommitByLineMeasureData, revisionsByLineMeasureData);
-    }
-
-    private String getMeasureData(final DecoratorContext decoratorContext, final Metric metric, final String resourceKey) throws MissingScmMeasureDataException {
-        final Measure measure = decoratorContext.getMeasure(metric);
-        if (MeasureUtils.hasData(measure)) {
-            return measure.getData();
-        }
-        LOG.debug("No measure found for metric [" + metric.getKey() + "] on resource [" + resourceKey + "]");
-        throw new MissingScmMeasureDataException();
-    }
+    LOG.debug("No measure found for metric [" + metric.getKey() + "] on resource [" + resourceKey + "]");
+    throw new MissingScmMeasureDataException();
+  }
 }

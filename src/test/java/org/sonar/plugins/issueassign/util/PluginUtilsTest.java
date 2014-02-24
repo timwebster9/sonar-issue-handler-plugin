@@ -33,34 +33,36 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class PluginUtilsTest {
 
-    @Mock private Issue issue;
-    @Mock private Settings settings;
+  @Mock
+  private Issue issue;
+  @Mock
+  private Settings settings;
 
-    @Test
-    public void testGetProjectKeyFromIssue() throws Exception {
-        final String componentKey = "str1:str2:str3";
-        when(issue.componentKey()).thenReturn(componentKey);
+  @Test
+  public void testGetProjectKeyFromIssue() throws Exception {
+    final String componentKey = "str1:str2:str3";
+    when(issue.componentKey()).thenReturn(componentKey);
 
-        final String projectKey = PluginUtils.getProjectKeyFromIssue(issue);
-        assertThat(projectKey).isEqualTo("str1:str2");
-    }
+    final String projectKey = PluginUtils.getProjectKeyFromIssue(issue);
+    assertThat(projectKey).isEqualTo("str1:str2");
+  }
 
-    @Test
-    public void testGetConfiguredSetting() throws Exception {
-        final String key = "key";
-        final String value = "value";
+  @Test
+  public void testGetConfiguredSetting() throws Exception {
+    final String key = "key";
+    final String value = "value";
 
-        when(settings.getString(key)).thenReturn(value);
+    when(settings.getString(key)).thenReturn(value);
 
-        final String configuredValue = PluginUtils.getConfiguredSetting(settings, key);
-        assertThat(configuredValue).isEqualTo(value);
-    }
+    final String configuredValue = PluginUtils.getConfiguredSetting(settings, key);
+    assertThat(configuredValue).isEqualTo(value);
+  }
 
-    @Test(expected = SettingNotConfiguredException.class)
-    public void testGetConfiguredSettingIfNotConfigured() throws Exception {
-        final String key = "key";
+  @Test(expected = SettingNotConfiguredException.class)
+  public void testGetConfiguredSettingIfNotConfigured() throws Exception {
+    final String key = "key";
 
-        when(settings.getString(key)).thenReturn(null);
-        PluginUtils.getConfiguredSetting(settings, key);
-    }
+    when(settings.getString(key)).thenReturn(null);
+    PluginUtils.getConfiguredSetting(settings, key);
+  }
 }

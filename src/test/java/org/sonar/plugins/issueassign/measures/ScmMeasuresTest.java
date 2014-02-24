@@ -39,114 +39,118 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class ScmMeasuresTest {
 
-    @Mock private DecoratorContext decoratorContext;
-    @Mock private Measure authorPerLineMeasure;
-    @Mock private Measure lastCommitDateTimeByLine;
-    @Mock private Measure revisionsByLine;
+  @Mock
+  private DecoratorContext decoratorContext;
+  @Mock
+  private Measure authorPerLineMeasure;
+  @Mock
+  private Measure lastCommitDateTimeByLine;
+  @Mock
+  private Measure revisionsByLine;
 
-    private static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZ";
-    private static final String DATE1 = "2013-01-31T12:12:12-0800";
-    private static final String DATE2 = "2011-02-01T12:12:12-0800";
-    private static final String DATE3 = "2014-01-01T12:12:12-0800";
+  private static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZ";
+  private static final String DATE1 = "2013-01-31T12:12:12-0800";
+  private static final String DATE2 = "2011-02-01T12:12:12-0800";
+  private static final String DATE3 = "2014-01-01T12:12:12-0800";
 
-    private static final String AUTHOR1 = "author1";
-    private static final String AUTHOR2 = "author2";
-    private static final String AUTHOR3 = "author3";
+  private static final String AUTHOR1 = "author1";
+  private static final String AUTHOR2 = "author2";
+  private static final String AUTHOR3 = "author3";
 
-    private static final String REVISION1 = "1";
-    private static final String REVISION2 = "2";
-    private static final String REVISION3 = "3";
+  private static final String REVISION1 = "1";
+  private static final String REVISION2 = "2";
+  private static final String REVISION3 = "3";
 
-    private static final String RESOURCE_KEY = "RESOURCE_KEY";
-    private static final String AUTHOR_DATA = "1=" + AUTHOR1 + ";2=" + AUTHOR2 + ";3=" + AUTHOR3;
-    private static final String COMMIT_DATA = "1=" + DATE1 + ";2=" + DATE2 + ";3=" + DATE3;
-    private static final String REVISION_DATA = "1=" + REVISION1 + ";2=" + REVISION2 + ";3=" + REVISION3;
+  private static final String RESOURCE_KEY = "RESOURCE_KEY";
+  private static final String AUTHOR_DATA = "1=" + AUTHOR1 + ";2=" + AUTHOR2 + ";3=" + AUTHOR3;
+  private static final String COMMIT_DATA = "1=" + DATE1 + ";2=" + DATE2 + ";3=" + DATE3;
+  private static final String REVISION_DATA = "1=" + REVISION1 + ";2=" + REVISION2 + ";3=" + REVISION3;
 
-    private ScmMeasures classUnderTest;
+  private ScmMeasures classUnderTest;
 
-    @Before
-    public void beforeTest() {
-        when(this.decoratorContext.getMeasure(CoreMetrics.SCM_AUTHORS_BY_LINE)).thenReturn(authorPerLineMeasure);
-        when(this.decoratorContext.getMeasure(CoreMetrics.SCM_LAST_COMMIT_DATETIMES_BY_LINE)).thenReturn(lastCommitDateTimeByLine);
-        when(this.decoratorContext.getMeasure(CoreMetrics.SCM_REVISIONS_BY_LINE)).thenReturn(revisionsByLine);
+  @Before
+  public void beforeTest() {
+    when(this.decoratorContext.getMeasure(CoreMetrics.SCM_AUTHORS_BY_LINE)).thenReturn(authorPerLineMeasure);
+    when(this.decoratorContext.getMeasure(CoreMetrics.SCM_LAST_COMMIT_DATETIMES_BY_LINE)).thenReturn(lastCommitDateTimeByLine);
+    when(this.decoratorContext.getMeasure(CoreMetrics.SCM_REVISIONS_BY_LINE)).thenReturn(revisionsByLine);
 
-        when(this.authorPerLineMeasure.getData()).thenReturn(AUTHOR_DATA);
-        when(this.lastCommitDateTimeByLine.getData()).thenReturn(COMMIT_DATA);
-        when(this.revisionsByLine.getData()).thenReturn(REVISION_DATA);
+    when(this.authorPerLineMeasure.getData()).thenReturn(AUTHOR_DATA);
+    when(this.lastCommitDateTimeByLine.getData()).thenReturn(COMMIT_DATA);
+    when(this.revisionsByLine.getData()).thenReturn(REVISION_DATA);
 
-        this.classUnderTest = new ScmMeasures(RESOURCE_KEY, AUTHOR_DATA, COMMIT_DATA, REVISION_DATA);
-    }
+    this.classUnderTest = new ScmMeasures(RESOURCE_KEY, AUTHOR_DATA, COMMIT_DATA, REVISION_DATA);
+  }
 
-    @Test
-    public void testGetAuthorsByLine() throws Exception {
-        final Map<Integer, String> mapData = this.classUnderTest.getAuthorsByLine();
-        assertThat(mapData).hasSize(3)
-                .containsKey(1).containsValue(AUTHOR1)
-                .containsKey(2).containsValue(AUTHOR2)
-                .containsKey(3).containsValue(AUTHOR3);
+  @Test
+  public void testGetAuthorsByLine() throws Exception {
+    final Map<Integer, String> mapData = this.classUnderTest.getAuthorsByLine();
+    assertThat(mapData).hasSize(3)
+        .containsKey(1).containsValue(AUTHOR1)
+        .containsKey(2).containsValue(AUTHOR2)
+        .containsKey(3).containsValue(AUTHOR3);
 
-        assertThat(mapData.get(1)).isEqualTo(AUTHOR1);
-        assertThat(mapData.get(2)).isEqualTo(AUTHOR2);
-        assertThat(mapData.get(3)).isEqualTo(AUTHOR3);
-    }
+    assertThat(mapData.get(1)).isEqualTo(AUTHOR1);
+    assertThat(mapData.get(2)).isEqualTo(AUTHOR2);
+    assertThat(mapData.get(3)).isEqualTo(AUTHOR3);
+  }
 
-    @Test
-    public void testGetLastCommitsByLine() throws Exception {
-        Map<Integer, Date> mapData = this.classUnderTest.getLastCommitsByLine();
+  @Test
+  public void testGetLastCommitsByLine() throws Exception {
+    Map<Integer, Date> mapData = this.classUnderTest.getLastCommitsByLine();
 
-        final DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
-        final Date date1 = dateFormat.parse(DATE1);
-        final Date date2 = dateFormat.parse(DATE2);
-        final Date date3 = dateFormat.parse(DATE3);
+    final DateFormat dateFormat = new SimpleDateFormat(DATE_FORMAT);
+    final Date date1 = dateFormat.parse(DATE1);
+    final Date date2 = dateFormat.parse(DATE2);
+    final Date date3 = dateFormat.parse(DATE3);
 
-        assertThat(mapData).hasSize(3)
-                .containsKey(1).containsValue(date1)
-                .containsKey(2).containsValue(date2)
-                .containsKey(3).containsValue(date3);
+    assertThat(mapData).hasSize(3)
+        .containsKey(1).containsValue(date1)
+        .containsKey(2).containsValue(date2)
+        .containsKey(3).containsValue(date3);
 
-        assertThat(mapData.get(1)).isEqualTo(date1);
-        assertThat(mapData.get(2)).isEqualTo(date2);
-        assertThat(mapData.get(3)).isEqualTo(date3);
+    assertThat(mapData.get(1)).isEqualTo(date1);
+    assertThat(mapData.get(2)).isEqualTo(date2);
+    assertThat(mapData.get(3)).isEqualTo(date3);
 
-        mapData = this.classUnderTest.getLastCommitsByLine();
+    mapData = this.classUnderTest.getLastCommitsByLine();
 
-        assertThat(mapData).hasSize(3)
-                .containsKey(1).containsValue(date1)
-                .containsKey(2).containsValue(date2)
-                .containsKey(3).containsValue(date3);
+    assertThat(mapData).hasSize(3)
+        .containsKey(1).containsValue(date1)
+        .containsKey(2).containsValue(date2)
+        .containsKey(3).containsValue(date3);
 
-        assertThat(mapData.get(1)).isEqualTo(date1);
-        assertThat(mapData.get(2)).isEqualTo(date2);
-        assertThat(mapData.get(3)).isEqualTo(date3);
-    }
+    assertThat(mapData.get(1)).isEqualTo(date1);
+    assertThat(mapData.get(2)).isEqualTo(date2);
+    assertThat(mapData.get(3)).isEqualTo(date3);
+  }
 
-    @Test
-    public void testGetRevisionsByLine() throws Exception {
-        Map<Integer, String> mapData = this.classUnderTest.getRevisionsByLine();
+  @Test
+  public void testGetRevisionsByLine() throws Exception {
+    Map<Integer, String> mapData = this.classUnderTest.getRevisionsByLine();
 
-        assertThat(mapData).hasSize(3)
-                .containsKey(1).containsValue(REVISION1)
-                .containsKey(2).containsValue(REVISION2)
-                .containsKey(3).containsValue(REVISION3);
+    assertThat(mapData).hasSize(3)
+        .containsKey(1).containsValue(REVISION1)
+        .containsKey(2).containsValue(REVISION2)
+        .containsKey(3).containsValue(REVISION3);
 
-        assertThat(mapData.get(1)).isEqualTo(REVISION1);
-        assertThat(mapData.get(2)).isEqualTo(REVISION2);
-        assertThat(mapData.get(3)).isEqualTo(REVISION3);
+    assertThat(mapData.get(1)).isEqualTo(REVISION1);
+    assertThat(mapData.get(2)).isEqualTo(REVISION2);
+    assertThat(mapData.get(3)).isEqualTo(REVISION3);
 
-        mapData = this.classUnderTest.getRevisionsByLine();
+    mapData = this.classUnderTest.getRevisionsByLine();
 
-        assertThat(mapData).hasSize(3)
-                .containsKey(1).containsValue(REVISION1)
-                .containsKey(2).containsValue(REVISION2)
-                .containsKey(3).containsValue(REVISION3);
+    assertThat(mapData).hasSize(3)
+        .containsKey(1).containsValue(REVISION1)
+        .containsKey(2).containsValue(REVISION2)
+        .containsKey(3).containsValue(REVISION3);
 
-        assertThat(mapData.get(1)).isEqualTo(REVISION1);
-        assertThat(mapData.get(2)).isEqualTo(REVISION2);
-        assertThat(mapData.get(3)).isEqualTo(REVISION3);
-    }
+    assertThat(mapData.get(1)).isEqualTo(REVISION1);
+    assertThat(mapData.get(2)).isEqualTo(REVISION2);
+    assertThat(mapData.get(3)).isEqualTo(REVISION3);
+  }
 
-    @Test
-    public void testGetKey() throws Exception {
-        assertThat(this.classUnderTest.getKey()).isEqualTo(RESOURCE_KEY);
-    }
+  @Test
+  public void testGetKey() throws Exception {
+    assertThat(this.classUnderTest.getKey()).isEqualTo(RESOURCE_KEY);
+  }
 }

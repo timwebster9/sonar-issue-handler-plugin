@@ -30,59 +30,59 @@ import org.sonar.plugins.issueassign.util.PluginUtils;
 
 public class Assign {
 
-    private static final Logger LOG = LoggerFactory.getLogger(Assign.class);
-    private static final String OVERRIDE_NOT_FOUND_MSG = "Override assignee is NOT configured.";
-    private final Settings settings;
-    private final Users users;
+  private static final Logger LOG = LoggerFactory.getLogger(Assign.class);
+  private static final String OVERRIDE_NOT_FOUND_MSG = "Override assignee is NOT configured.";
+  private final Settings settings;
+  private final Users users;
 
-    public Assign(final Settings settings, final UserFinder userFinder) {
-        this.settings = settings;
-        this.users = new Users(userFinder);
+  public Assign(final Settings settings, final UserFinder userFinder) {
+    this.settings = settings;
+    this.users = new Users(userFinder);
+  }
+
+  public User getAssignee(final String scmAuthor) throws IssueHandlerPluginException {
+
+    User sonarUser;
+
+    try {
+      return this.getOverrideAssignee();
+    } catch (final IssueHandlerPluginException e) {
+      LOG.debug(OVERRIDE_NOT_FOUND_MSG);
     }
 
-    public User getAssignee(final String scmAuthor) throws IssueHandlerPluginException {
+    try {
+      sonarUser = this.users.getSonarUser(scmAuthor);
+      return sonarUser;
+    } catch (final SonarUserNotFoundException e) {
+      LOG.debug("Sonar user not found: " + scmAuthor);
+      return this.getDefaultAssignee();
+    }
+  }
 
-        User sonarUser;
-
-        try {
-            return this.getOverrideAssignee();
-        } catch (final IssueHandlerPluginException e) {
-            LOG.debug(OVERRIDE_NOT_FOUND_MSG);
-        }
-
-        try {
-            sonarUser = this.users.getSonarUser(scmAuthor);
-            return sonarUser;
-        } catch (final SonarUserNotFoundException e) {
-            LOG.debug("Sonar user not found: " + scmAuthor);
-            return this.getDefaultAssignee();
-        }
+  public User getAssignee() throws IssueHandlerPluginException {
+    try {
+      return this.getOverrideAssignee();
+    } catch (final IssueHandlerPluginException e) {
+      LOG.debug(OVERRIDE_NOT_FOUND_MSG);
     }
 
-    public User getAssignee() throws IssueHandlerPluginException {
-        try {
-            return this.getOverrideAssignee();
-        } catch (final IssueHandlerPluginException e) {
-            LOG.debug(OVERRIDE_NOT_FOUND_MSG);
-        }
+    return this.getDefaultAssignee();
+  }
 
-        return this.getDefaultAssignee();
-    }
+  private User getOverrideAssignee() throws IssueHandlerPluginException {
+    final User overrideUser = this.getConfiguredSonarUser(IssueAssignPlugin.PROPERTY_OVERRIDE_ASSIGNEE);
+    LOG.debug("Override assignee is configured: " + overrideUser.login());
+    return overrideUser;
+  }
 
-    private User getOverrideAssignee() throws IssueHandlerPluginException {
-        final User overrideUser = this.getConfiguredSonarUser(IssueAssignPlugin.PROPERTY_OVERRIDE_ASSIGNEE);
-        LOG.debug("Override assignee is configured: " + overrideUser.login());
-        return overrideUser;
-    }
+  private User getDefaultAssignee() throws IssueHandlerPluginException {
+    final User defaultUser = this.getConfiguredSonarUser(IssueAssignPlugin.PROPERTY_DEFAULT_ASSIGNEE);
+    LOG.debug("Default assignee is configured:" + defaultUser.login());
+    return defaultUser;
+  }
 
-    private User getDefaultAssignee() throws IssueHandlerPluginException {
-        final User defaultUser = this.getConfiguredSonarUser(IssueAssignPlugin.PROPERTY_DEFAULT_ASSIGNEE);
-        LOG.debug("Default assignee is configured:" + defaultUser.login());
-        return defaultUser;
-    }
-
-    private User getConfiguredSonarUser(final String key) throws IssueHandlerPluginException {
-        final String configuredUser = PluginUtils.getConfiguredSetting(settings, key);
-        return this.users.getSonarUser(configuredUser);
-    }
+  private User getConfiguredSonarUser(final String key) throws IssueHandlerPluginException {
+    final String configuredUser = PluginUtils.getConfiguredSetting(settings, key);
+    return this.users.getSonarUser(configuredUser);
+  }
 }

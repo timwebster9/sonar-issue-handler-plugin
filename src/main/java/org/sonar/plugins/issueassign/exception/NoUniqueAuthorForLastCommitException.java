@@ -20,7 +20,7 @@
 package org.sonar.plugins.issueassign.exception;
 
 public class NoUniqueAuthorForLastCommitException extends RuntimeException {
-    public NoUniqueAuthorForLastCommitException(final String msg) {
-        super(msg);
-    }
+  public NoUniqueAuthorForLastCommitException(final String msg) {
+    super(msg);
+  }
 }

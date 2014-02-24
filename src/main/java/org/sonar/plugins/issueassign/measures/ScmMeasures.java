@@ -30,61 +30,61 @@ import java.util.Map;
 
 public class ScmMeasures {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ScmMeasures.class);
-    private String resourceKey;
+  private static final Logger LOG = LoggerFactory.getLogger(ScmMeasures.class);
+  private String resourceKey;
 
-    private final String authorsByLineMeasure;
-    private final String lastCommitsByLineMeasure;
-    private final String revisionsByLineMeasure;
+  private final String authorsByLineMeasure;
+  private final String lastCommitsByLineMeasure;
+  private final String revisionsByLineMeasure;
 
-    private Map<Integer, String> authorsByLine;
-    private Map<Integer, Date> lastCommitsByLine;
-    private Map<Integer, String> revisionsByLine;
+  private Map<Integer, String> authorsByLine;
+  private Map<Integer, Date> lastCommitsByLine;
+  private Map<Integer, String> revisionsByLine;
 
-    public ScmMeasures(final String resourceKey, final String authorsByLineMeasure,
-                       final String lastCommitsByLineMeasure, final String revisionsByLineMeasure) {
-        this.resourceKey = resourceKey;
-        this.authorsByLineMeasure = authorsByLineMeasure;
-        this.lastCommitsByLineMeasure = lastCommitsByLineMeasure;
-        this.revisionsByLineMeasure = revisionsByLineMeasure;
+  public ScmMeasures(final String resourceKey, final String authorsByLineMeasure,
+                     final String lastCommitsByLineMeasure, final String revisionsByLineMeasure) {
+    this.resourceKey = resourceKey;
+    this.authorsByLineMeasure = authorsByLineMeasure;
+    this.lastCommitsByLineMeasure = lastCommitsByLineMeasure;
+    this.revisionsByLineMeasure = revisionsByLineMeasure;
+  }
+
+  public Map<Integer, String> getAuthorsByLine() {
+    if (this.authorsByLine == null) {
+      this.authorsByLine = this.parseIntString(CoreMetrics.SCM_AUTHORS_BY_LINE, this.authorsByLineMeasure);
     }
+    return this.authorsByLine;
+  }
 
-    public Map<Integer, String> getAuthorsByLine() {
-        if (this.authorsByLine == null) {
-            this.authorsByLine = this.parseIntString(CoreMetrics.SCM_AUTHORS_BY_LINE, this.authorsByLineMeasure);
-        }
-        return this.authorsByLine;
+  public Map<Integer, Date> getLastCommitsByLine() {
+    if (this.lastCommitsByLine == null) {
+      this.lastCommitsByLine = this.parseIntDateTime(CoreMetrics.SCM_LAST_COMMIT_DATETIMES_BY_LINE, this.lastCommitsByLineMeasure);
     }
+    return this.lastCommitsByLine;
+  }
 
-    public Map<Integer, Date> getLastCommitsByLine() {
-        if (this.lastCommitsByLine == null) {
-            this.lastCommitsByLine = this.parseIntDateTime(CoreMetrics.SCM_LAST_COMMIT_DATETIMES_BY_LINE, this.lastCommitsByLineMeasure);
-        }
-        return this.lastCommitsByLine;
+  public Map<Integer, String> getRevisionsByLine() {
+    if (this.revisionsByLine == null) {
+      this.revisionsByLine = this.parseIntString(CoreMetrics.SCM_REVISIONS_BY_LINE, this.revisionsByLineMeasure);
     }
+    return revisionsByLine;
+  }
 
-    public Map<Integer, String> getRevisionsByLine() {
-        if (this.revisionsByLine == null) {
-            this.revisionsByLine = this.parseIntString(CoreMetrics.SCM_REVISIONS_BY_LINE, this.revisionsByLineMeasure);
-        }
-        return revisionsByLine;
-    }
+  public String getKey() {
+    return resourceKey;
+  }
 
-    public String getKey() {
-        return resourceKey;
-    }
+  private Map<Integer, String> parseIntString(final Metric metric, final String measure) {
+    this.logMeasureData(metric, measure);
+    return KeyValueFormat.parseIntString(measure);
+  }
 
-    private Map<Integer, String> parseIntString(final Metric metric, final String measure) {
-        this.logMeasureData(metric, measure);
-        return KeyValueFormat.parseIntString(measure);
-    }
+  private Map<Integer, Date> parseIntDateTime(final Metric metric, final String measure) {
+    this.logMeasureData(metric, measure);
+    return KeyValueFormat.parseIntDateTime(measure);
+  }
 
-    private Map<Integer, Date> parseIntDateTime(final Metric metric, final String measure) {
-        this.logMeasureData(metric, measure);
-        return KeyValueFormat.parseIntDateTime(measure);
-    }
-
-    private void logMeasureData(final Metric metric, final String measure) {
-        LOG.debug(metric.getName() + ": [" + measure + "]");
-    }
+  private void logMeasureData(final Metric metric, final String measure) {
+    LOG.debug(metric.getName() + ": [" + measure + "]");
+  }
 }

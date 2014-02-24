@@ -31,83 +31,85 @@ import org.sonar.plugins.issueassign.exception.SettingNotConfiguredException;
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
-/**
- * Created by twebster on 25/01/14.
- */
 @RunWith(MockitoJUnitRunner.class)
 public class AssignTest {
 
-    @Mock private Settings mockSettings;
-    @Mock private UserFinder mockUserFinder;
-    @Mock private User overrideUser;
-    @Mock private User scmAuthorUser;
-    @Mock private User defaultUser;
+  @Mock
+  private Settings mockSettings;
+  @Mock
+  private UserFinder mockUserFinder;
+  @Mock
+  private User overrideUser;
+  @Mock
+  private User scmAuthorUser;
+  @Mock
+  private User defaultUser;
 
-    private static final String DEFAULT_ASSIGNEE = "defaultAssignee";
-    private static final String OVERRIDE_ASSIGNEE = "overrideAssignee";
-    private static final String SCM_AUTHOR = "scmAuthor";
+  private static final String DEFAULT_ASSIGNEE = "defaultAssignee";
+  private static final String OVERRIDE_ASSIGNEE = "overrideAssignee";
+  private static final String SCM_AUTHOR = "scmAuthor";
 
-    @Test
-    public void testGetAssigneeWithScmAuthorAndOverride() throws Exception {
+  @Test
+  public void testGetAssigneeWithScmAuthorAndOverride() throws Exception {
 
-        when(mockSettings.getString(IssueAssignPlugin.PROPERTY_OVERRIDE_ASSIGNEE))
-                .thenReturn(OVERRIDE_ASSIGNEE);
-        when(mockUserFinder.findByLogin(OVERRIDE_ASSIGNEE)).thenReturn(overrideUser);
+    when(mockSettings.getString(IssueAssignPlugin.PROPERTY_OVERRIDE_ASSIGNEE))
+        .thenReturn(OVERRIDE_ASSIGNEE);
+    when(mockUserFinder.findByLogin(OVERRIDE_ASSIGNEE)).thenReturn(overrideUser);
 
-        final Assign classUnderTest = new Assign(mockSettings, mockUserFinder);
-        final User user = classUnderTest.getAssignee(SCM_AUTHOR);
-        assertThat(user).isSameAs(overrideUser);
-    }
+    final Assign classUnderTest = new Assign(mockSettings, mockUserFinder);
+    final User user = classUnderTest.getAssignee(SCM_AUTHOR);
+    assertThat(user).isSameAs(overrideUser);
+  }
 
-    @Test
-    public void testGetAssigneeWithScmAuthorAndNoOverride() throws Exception {
-        when(mockSettings.getString(IssueAssignPlugin.PROPERTY_OVERRIDE_ASSIGNEE))
-                .thenThrow(SettingNotConfiguredException.class);
-        when(mockUserFinder.findByLogin(SCM_AUTHOR)).thenReturn(scmAuthorUser);
+  @Test
+  public void testGetAssigneeWithScmAuthorAndNoOverride() throws Exception {
+    when(mockSettings.getString(IssueAssignPlugin.PROPERTY_OVERRIDE_ASSIGNEE))
+        .thenThrow(SettingNotConfiguredException.class);
+    when(mockUserFinder.findByLogin(SCM_AUTHOR)).thenReturn(scmAuthorUser);
 
-        final Assign classUnderTest = new Assign(mockSettings, mockUserFinder);
-        final User user = classUnderTest.getAssignee(SCM_AUTHOR);
-        assertThat(user).isSameAs(scmAuthorUser);
-    }
+    final Assign classUnderTest = new Assign(mockSettings, mockUserFinder);
+    final User user = classUnderTest.getAssignee(SCM_AUTHOR);
+    assertThat(user).isSameAs(scmAuthorUser);
+  }
 
-    @Test
-    public void testGetAssigneeWithScmAuthorNotFound() throws Exception {
-        when(mockSettings.getString(IssueAssignPlugin.PROPERTY_OVERRIDE_ASSIGNEE))
-                .thenThrow(SettingNotConfiguredException.class);
-        when(mockUserFinder.findByLogin(SCM_AUTHOR)).thenReturn(null);
+  @Test
+  public void testGetAssigneeWithScmAuthorNotFound() throws Exception {
+    when(mockSettings.getString(IssueAssignPlugin.PROPERTY_OVERRIDE_ASSIGNEE))
+        .thenThrow(SettingNotConfiguredException.class);
+    when(mockUserFinder.findByLogin(SCM_AUTHOR)).thenReturn(null);
 
-        // on to the default assignee
-        when(mockSettings.getString(IssueAssignPlugin.PROPERTY_DEFAULT_ASSIGNEE))
-                .thenReturn(DEFAULT_ASSIGNEE);
-        when(mockUserFinder.findByLogin(DEFAULT_ASSIGNEE)).thenReturn(defaultUser);
+    // on to the default assignee
+    when(mockSettings.getString(IssueAssignPlugin.PROPERTY_DEFAULT_ASSIGNEE))
+        .thenReturn(DEFAULT_ASSIGNEE);
+    when(mockUserFinder.findByLogin(DEFAULT_ASSIGNEE)).thenReturn(defaultUser);
 
-        final Assign classUnderTest = new Assign(mockSettings, mockUserFinder);
-        final User user = classUnderTest.getAssignee(SCM_AUTHOR);
-        assertThat(user).isSameAs(defaultUser);
-    }
+    final Assign classUnderTest = new Assign(mockSettings, mockUserFinder);
+    final User user = classUnderTest.getAssignee(SCM_AUTHOR);
+    assertThat(user).isSameAs(defaultUser);
+  }
 
-    @Test
-    public void testGetAssigneeWithoutScmAuthorAuthorAndOverride() throws Exception {
+  @Test
+  public void testGetAssigneeWithoutScmAuthorAuthorAndOverride() throws Exception {
 
-        when(mockSettings.getString(IssueAssignPlugin.PROPERTY_OVERRIDE_ASSIGNEE))
-                .thenReturn(OVERRIDE_ASSIGNEE);
-        when(mockUserFinder.findByLogin(OVERRIDE_ASSIGNEE)).thenReturn(overrideUser);
+    when(mockSettings.getString(IssueAssignPlugin.PROPERTY_OVERRIDE_ASSIGNEE))
+        .thenReturn(OVERRIDE_ASSIGNEE);
+    when(mockUserFinder.findByLogin(OVERRIDE_ASSIGNEE)).thenReturn(overrideUser);
 
-        final Assign classUnderTest = new Assign(mockSettings, mockUserFinder);
-        final User user = classUnderTest.getAssignee();
-        assertThat(user).isSameAs(overrideUser);
-    }
+    final Assign classUnderTest = new Assign(mockSettings, mockUserFinder);
+    final User user = classUnderTest.getAssignee();
+    assertThat(user).isSameAs(overrideUser);
+  }
 
-    @Test
-    public void testGetAssigneeWithoutScmAuthorAndNoOverride() throws Exception {
-        when(mockSettings.getString(IssueAssignPlugin.PROPERTY_OVERRIDE_ASSIGNEE))
-                .thenThrow(SettingNotConfiguredException.class);
-        when(mockSettings.getString(IssueAssignPlugin.PROPERTY_DEFAULT_ASSIGNEE))
-                .thenReturn(DEFAULT_ASSIGNEE);
-        when(mockUserFinder.findByLogin(DEFAULT_ASSIGNEE)).thenReturn(defaultUser);
+  @Test
+  public void testGetAssigneeWithoutScmAuthorAndNoOverride() throws Exception {
+    when(mockSettings.getString(IssueAssignPlugin.PROPERTY_OVERRIDE_ASSIGNEE))
+        .thenThrow(SettingNotConfiguredException.class);
+    when(mockSettings.getString(IssueAssignPlugin.PROPERTY_DEFAULT_ASSIGNEE))
+        .thenReturn(DEFAULT_ASSIGNEE);
+    when(mockUserFinder.findByLogin(DEFAULT_ASSIGNEE)).thenReturn(defaultUser);
 
-        final Assign classUnderTest = new Assign(mockSettings, mockUserFinder);
-        final User user = classUnderTest.getAssignee();
-        assertThat(user).isSameAs(defaultUser);
-    }
+    final Assign classUnderTest = new Assign(mockSettings, mockUserFinder);
+    final User user = classUnderTest.getAssignee();
+    assertThat(user).isSameAs(defaultUser);
+  }
 }
