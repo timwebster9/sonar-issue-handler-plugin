@@ -30,7 +30,6 @@ import org.sonar.api.measures.MeasureUtils;
 import org.sonar.api.measures.Metric;
 import org.sonar.api.resources.Project;
 import org.sonar.api.resources.Resource;
-import org.sonar.api.resources.ResourceUtils;
 import org.sonar.plugins.issueassign.exception.MissingScmMeasureDataException;
 
 import java.util.HashMap;
@@ -48,16 +47,16 @@ public class MeasuresCollector implements Decorator {
 
   public void decorate(final Resource resource, final DecoratorContext decoratorContext) {
 
-    if (ResourceUtils.isFile(resource)) {
-      try {
-        final ScmMeasures scmMeasures = this.getMeasures(resource.getEffectiveKey(), decoratorContext);
-        resourceScmMeasures.put(resource.getEffectiveKey(), scmMeasures);
-      } catch (final MissingScmMeasureDataException e) {
-        LOG.warn("SCM Measures not collected for resource [" + resource.getEffectiveKey() + "]");
-      } catch (final Exception e) {
-        LOG.error("Error collecting measures for resource [" + resource.getEffectiveKey() + "]", e);
-      }
-    }
+//    if (ResourceUtils.isFile(resource)) {
+//      try {
+//        final ScmMeasures scmMeasures = this.getMeasures(resource.getEffectiveKey(), decoratorContext);
+//        resourceScmMeasures.put(resource.getEffectiveKey(), scmMeasures);
+//      } catch (final MissingScmMeasureDataException e) {
+//        LOG.warn("SCM Measures not collected for resource [" + resource.getEffectiveKey() + "]");
+//      } catch (final Exception e) {
+//        LOG.error("Error collecting measures for resource [" + resource.getEffectiveKey() + "]", e);
+//      }
+//    }
   }
 
   public boolean shouldExecuteOnProject(final Project project) {

@@ -19,6 +19,7 @@
  */
 package org.sonar.plugins.issueassign.measures;
 
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -50,6 +51,7 @@ public class MeasuresCollectorTest {
   private static final String COMMITS_MEASURE_DATA = "1=2013-01-31T12:12:12-0800;2=2012-01-31T12:12:12-0800";
   private static final String REVISIONS_MEASURE_DATA = "1=1;2=2";
 
+  @Ignore
   @Test
   public void testDecorateMeasureWithMeasureFound() throws Exception {
     when(resource.getScope()).thenReturn(Scopes.FILE);
