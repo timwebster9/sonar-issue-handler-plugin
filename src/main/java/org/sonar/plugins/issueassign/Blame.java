@@ -24,7 +24,6 @@ import org.slf4j.LoggerFactory;
 import org.sonar.api.issue.Issue;
 import org.sonar.plugins.issueassign.exception.MissingScmMeasureDataException;
 import org.sonar.plugins.issueassign.exception.NoUniqueAuthorForLastCommitException;
-import org.sonar.plugins.issueassign.measures.MeasuresCollector;
 import org.sonar.plugins.issueassign.measures.ScmMeasures;
 
 import java.util.*;
@@ -32,10 +31,10 @@ import java.util.*;
 public class Blame {
 
   private static final Logger LOG = LoggerFactory.getLogger(Blame.class);
-  private final MeasuresCollector measuresCollector;
+  private final ResourceMeasuresFinder resourceMeasuresFinder;
 
-  public Blame(final MeasuresCollector measuresCollector) {
-    this.measuresCollector = measuresCollector;
+  public Blame(final ResourceMeasuresFinder resourceMeasuresFinder) {
+    this.resourceMeasuresFinder = resourceMeasuresFinder;
   }
 
   public String getScmAuthorForIssue(final Issue issue) throws MissingScmMeasureDataException {
@@ -81,7 +80,7 @@ public class Blame {
   }
 
   private ScmMeasures getMeasuresForResource(final String resourceKey) throws MissingScmMeasureDataException {
-    final ScmMeasures scmMeasures = this.measuresCollector.getResources().get(resourceKey);
+    final ScmMeasures scmMeasures = this.resourceMeasuresFinder.getScmMeasuresForResource(resourceKey);
     if (scmMeasures == null) {
       throw new MissingScmMeasureDataException();
     }

@@ -25,8 +25,6 @@ import org.sonar.api.batch.SonarIndex;
 import org.sonar.api.config.Settings;
 import org.sonar.api.issue.Issue;
 import org.sonar.api.issue.IssueHandler;
-import org.sonar.api.measures.CoreMetrics;
-import org.sonar.api.resources.File;
 import org.sonar.api.resources.Resource;
 import org.sonar.api.scan.filesystem.ModuleFileSystem;
 import org.sonar.api.user.User;
@@ -36,8 +34,6 @@ import org.sonar.plugins.issueassign.exception.MissingScmMeasureDataException;
 import org.sonar.plugins.issueassign.measures.MeasuresCollector;
 import org.sonar.plugins.issueassign.measures.ScmMeasures;
 
-import java.util.Collection;
-
 public class IssueAssigner implements IssueHandler {
 
   private static final Logger LOG = LoggerFactory.getLogger(IssueAssigner.class);
@@ -45,7 +41,7 @@ public class IssueAssigner implements IssueHandler {
   private final Blame blame;
   private final Assign assign;
   private ModuleFileSystem moduleFileSystem;
-  private SonarIndex sonarIndex;
+  private ResourceMeasuresFinder resourceMeasuresFinder;
 
   public IssueAssigner(final MeasuresCollector measuresCollector, final Settings settings,
                        final UserFinder userFinder, final ModuleFileSystem moduleFileSystem,
@@ -54,7 +50,7 @@ public class IssueAssigner implements IssueHandler {
     this.assign = new Assign(settings, userFinder);
     this.settings = settings;
     this.moduleFileSystem = moduleFileSystem;
-    this.sonarIndex = sonarIndex;
+    this.resourceMeasuresFinder = new ResourceMeasuresFinder(sonarIndex);
   }
 
   public void onIssue(final Context context) {
@@ -77,48 +73,16 @@ public class IssueAssigner implements IssueHandler {
     //LOG.info("Found resource: " + resource.getEffectiveKey());
 
     //TODO not sure this check is necessary
-//    if (issue.isNew()) {
-//      LOG.debug("Found new issue [" + issue.key() + "]");
-//      try {
-//        this.assignIssue(context, issue);
-//      } catch (final IssueAssignPluginException pluginException) {
-//        LOG.warn("Unable to assign issue [" + issue.key() + "]");
-//      } catch (final Exception e) {
-//        LOG.error("Error assigning issue [" + issue.key() + "]", e);
-//      }
-//    }
-  }
-
-  private ScmMeasures getMeasures(final Resource resource) throws MissingScmMeasureDataException {
-    final String authorsByLineMeasureData = this.sonarIndex.getMeasure(resource, CoreMetrics.SCM_AUTHORS_BY_LINE).getData();
-    LOG.info("authorsByLineMeasureData: " + authorsByLineMeasureData);
-
-    final String lastCommitByLineMeasureData = this.sonarIndex.getMeasure(resource, CoreMetrics.SCM_LAST_COMMIT_DATETIMES_BY_LINE).getData();
-    LOG.info("lastCommitByLineMeasureData: " + lastCommitByLineMeasureData);
-
-    final String revisionsByLineMeasureData = this.sonarIndex.getMeasure(resource, CoreMetrics.SCM_REVISIONS_BY_LINE).getData();
-    LOG.info("revisionsByLineMeasureData: " + revisionsByLineMeasureData);
-
-    return new ScmMeasures(resource.getEffectiveKey(), authorsByLineMeasureData,
-        lastCommitByLineMeasureData, revisionsByLineMeasureData);
-  }
-
-  private Resource resolveResource(final String resourceKey) {
-    LOG.info("resource key: " + resourceKey);
-    // org.codehaus.sonar.examples:sonar-new-code-coverage-plugin:com.timsoft.sonar.plugins.coverage.MeasuresCollector
-
-    final Collection<Resource> resources = this.sonarIndex.getResources();
-
-    for (final Resource resource : resources) {
-      if (resource.getEffectiveKey().equals(resourceKey)) {
-        LOG.info("Found resource for [" + resourceKey + "]");
-        return resource;
+    if (issue.isNew()) {
+      LOG.debug("Found new issue [" + issue.key() + "]");
+      try {
+        this.assignIssue(context, issue);
+      } catch (final IssueAssignPluginException pluginException) {
+        LOG.warn("Unable to assign issue [" + issue.key() + "]");
+      } catch (final Exception e) {
+        LOG.error("Error assigning issue [" + issue.key() + "]", e);
       }
     }
-
-    File sonarFile = new File(resourceKey);
-    //return this.sonarIndex.getResource(sonarFile);
-    return null;
   }
 
   private void assignIssue(final Context context, final Issue issue) throws IssueAssignPluginException {
