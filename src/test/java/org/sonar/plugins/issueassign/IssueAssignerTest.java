@@ -28,7 +28,6 @@ import org.sonar.api.issue.Issue;
 import org.sonar.api.issue.IssueHandler;
 import org.sonar.api.user.User;
 import org.sonar.api.user.UserFinder;
-import org.sonar.plugins.issueassign.measures.MeasuresCollector;
 
 @Ignore
 @RunWith(MockitoJUnitRunner.class)
@@ -38,7 +37,6 @@ public class IssueAssignerTest {
   @Mock private Issue issue;
   @Mock private Settings settings;
   @Mock private Blame blame;
-  @Mock private MeasuresCollector measuresCollector;
   @Mock private UserFinder userFinder;
   @Mock private Assign assign;
   @Mock private User assignee;

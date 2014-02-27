@@ -23,7 +23,6 @@ import org.sonar.api.Properties;
 import org.sonar.api.Property;
 import org.sonar.api.PropertyType;
 import org.sonar.api.SonarPlugin;
-import org.sonar.plugins.issueassign.measures.MeasuresCollector;
 
 import java.util.Arrays;
 import java.util.List;
@@ -57,7 +56,6 @@ public final class IssueAssignPlugin extends SonarPlugin {
   public static final String PROPERTY_ENABLED = "issueassignplugin.enabled";
 
   public List getExtensions() {
-    return Arrays.asList(MeasuresCollector.class,
-        IssueAssigner.class);
+    return Arrays.asList(IssueAssigner.class);
   }
 }

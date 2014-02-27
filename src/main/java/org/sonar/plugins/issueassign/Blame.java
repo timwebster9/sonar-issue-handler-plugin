@@ -22,6 +22,7 @@ package org.sonar.plugins.issueassign;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sonar.api.issue.Issue;
+import org.sonar.plugins.issueassign.exception.IssueAssignPluginException;
 import org.sonar.plugins.issueassign.exception.MissingScmMeasureDataException;
 import org.sonar.plugins.issueassign.exception.NoUniqueAuthorForLastCommitException;
 import org.sonar.plugins.issueassign.measures.ScmMeasures;
@@ -37,7 +38,7 @@ public class Blame {
     this.resourceMeasuresFinder = resourceMeasuresFinder;
   }
 
-  public String getScmAuthorForIssue(final Issue issue) throws MissingScmMeasureDataException {
+  public String getScmAuthorForIssue(final Issue issue) throws IssueAssignPluginException {
 
     final String authorForIssueLine = this.getAuthorForIssueLine(issue);
     final String lastCommitterForResource = getLastCommitterForResource(issue.componentKey());
@@ -51,7 +52,7 @@ public class Blame {
     return lastCommitterForResource;
   }
 
-  private String getLastCommitterForResource(final String resourceKey) throws MissingScmMeasureDataException {
+  private String getLastCommitterForResource(final String resourceKey) throws IssueAssignPluginException {
     final Date lastCommitDate = this.getLastCommitDate(resourceKey);
     final List<Integer> linesFromLastCommit = this.getLinesFromLastCommit(resourceKey, lastCommitDate);
     final ScmMeasures scmMeasures = this.getMeasuresForResource(resourceKey);
@@ -75,11 +76,11 @@ public class Blame {
     return author;
   }
 
-  private String getAuthorForIssueLine(final Issue issue) throws MissingScmMeasureDataException {
+  private String getAuthorForIssueLine(final Issue issue) throws IssueAssignPluginException {
     return getMeasuresForResource(issue.componentKey()).getAuthorsByLine().get(issue.line());
   }
 
-  private ScmMeasures getMeasuresForResource(final String resourceKey) throws MissingScmMeasureDataException {
+  private ScmMeasures getMeasuresForResource(final String resourceKey) throws IssueAssignPluginException {
     final ScmMeasures scmMeasures = this.resourceMeasuresFinder.getScmMeasuresForResource(resourceKey);
     if (scmMeasures == null) {
       throw new MissingScmMeasureDataException();
@@ -87,14 +88,14 @@ public class Blame {
     return scmMeasures;
   }
 
-  private Date getLastCommitDate(final String resourceKey) throws MissingScmMeasureDataException {
+  private Date getLastCommitDate(final String resourceKey) throws IssueAssignPluginException {
     final ScmMeasures scmMeasures = this.getMeasuresForResource(resourceKey);
     final Collection<Date> commitDatesForResource = scmMeasures.getLastCommitsByLine().values();
     final SortedSet<Date> sortedSet = new TreeSet(commitDatesForResource);
     return sortedSet.last();
   }
 
-  private List<Integer> getLinesFromLastCommit(final String resourceKey, final Date lastCommitDate) throws MissingScmMeasureDataException {
+  private List<Integer> getLinesFromLastCommit(final String resourceKey, final Date lastCommitDate) throws IssueAssignPluginException {
 
     final List<Integer> lines = new ArrayList<Integer>();
     final ScmMeasures scmMeasures = this.getMeasuresForResource(resourceKey);

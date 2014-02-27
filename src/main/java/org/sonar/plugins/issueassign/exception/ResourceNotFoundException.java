@@ -17,19 +17,7 @@
  * License along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02
  */
-package org.sonar.plugins.issueassign;
+package org.sonar.plugins.issueassign.exception;
 
-import org.junit.Test;
-
-import static org.fest.assertions.api.Assertions.assertThat;
-
-public class IssueAssignPluginTest {
-
-  @Test
-  public void testGetExtensions() throws Exception {
-    final IssueAssignPlugin classUnderTest = new IssueAssignPlugin();
-    assertThat(classUnderTest.getExtensions())
-        .hasSize(1)
-        .containsExactly(IssueAssigner.class);
-  }
+public class ResourceNotFoundException extends IssueAssignPluginException {
 }
