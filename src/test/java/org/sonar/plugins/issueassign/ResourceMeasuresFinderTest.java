@@ -30,6 +30,7 @@ import org.sonar.api.measures.Measure;
 import org.sonar.api.resources.File;
 import org.sonar.api.resources.Resource;
 import org.sonar.plugins.issueassign.exception.MissingScmMeasureDataException;
+import org.sonar.plugins.issueassign.exception.ResourceNotFoundException;
 import org.sonar.plugins.issueassign.measures.ScmMeasures;
 
 import java.util.HashSet;
@@ -90,6 +91,20 @@ public class ResourceMeasuresFinderTest {
 
     final ScmMeasures cachedScmMeasure = classUnderTest.getScmMeasuresForResource(COMPONENT_KEY);
     assertThat(cachedScmMeasure).isSameAs(scmMeasure);
+  }
+
+  @Test(expected = ResourceNotFoundException.class)
+  public void testGetScmMeasuresForResourceWithNullResourceId() throws Exception {
+
+    resource.setId(null);
+
+    final Set<Resource> resources = new HashSet<Resource>();
+    resources.add(resource);
+
+    when(this.sonarIndex.getResources()).thenReturn(resources);
+
+    final ResourceMeasuresFinder classUnderTest = new ResourceMeasuresFinder(this.sonarIndex);
+    classUnderTest.getScmMeasuresForResource(COMPONENT_KEY);
   }
 
   @Test(expected = MissingScmMeasureDataException.class)
