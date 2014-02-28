@@ -62,7 +62,7 @@ public class ResourceMeasuresFinder {
     final Collection<Resource> resources = this.sonarIndex.getResources();
 
     for (final Resource resource : resources) {
-      if (resource.getEffectiveKey().equals(componentKey)) {
+      if (matches(componentKey, resource)) {
         LOG.info("Found resource for [" + componentKey + "]");
         return resource;
       }
@@ -70,6 +70,10 @@ public class ResourceMeasuresFinder {
 
     LOG.warn("No resource found for component [" + componentKey + "]");
     throw new ResourceNotFoundException();
+  }
+
+  private boolean matches(final String componentKey, final Resource resource) {
+    return resource.getEffectiveKey().equals(componentKey) && resource.getId() != null;
   }
 
    private ScmMeasures getMeasures(final Resource resource) throws MissingScmMeasureDataException {

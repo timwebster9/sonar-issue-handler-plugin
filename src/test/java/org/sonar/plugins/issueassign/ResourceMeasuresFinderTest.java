@@ -19,6 +19,7 @@
  */
 package org.sonar.plugins.issueassign;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
@@ -26,6 +27,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.sonar.api.batch.SonarIndex;
 import org.sonar.api.measures.CoreMetrics;
 import org.sonar.api.measures.Measure;
+import org.sonar.api.resources.File;
 import org.sonar.api.resources.Resource;
 import org.sonar.plugins.issueassign.exception.MissingScmMeasureDataException;
 import org.sonar.plugins.issueassign.measures.ScmMeasures;
@@ -40,26 +42,37 @@ import static org.mockito.Mockito.when;
 public class ResourceMeasuresFinderTest {
 
   @Mock private SonarIndex sonarIndex;
-  @Mock private Resource resource;
+  //@Mock private Resource resource;
   @Mock private Measure scmAuthorsByLineMeasure;
   @Mock private Measure scmLastCommitDateTimesByLineMeasure;
   @Mock private Measure scmRevisionsByLineMeasure;
 
-  private static final String COMPONENT_KEY = "COMPONENT_KEY";
+  private static final String COMPONENT_KEY = "RESOURCE_EFFECTIVE_KEY";
+  private static final Integer RESOURCE_ID = 1;
+  private static final String RESOURCE_KEY = "RESOURCE_KEY";
+  private static final String RESOURCE_EFFECTIVE_KEY = "RESOURCE_EFFECTIVE_KEY";
 
   //  not 'real' data
   private static final String SCM_AUTHOR_BY_LINE_DATA = "SCM_AUTHOR_BY_LINE_DATA";
   private static final String SCM_LAST_COMMIT_DATA = "SCM_LAST_COMMIT_DATA";
   private static final String SCM_REVISIONS_BY_LINE_DATA = "SCM_REVISIONS_BY_LINE_DATA";
 
+  private Resource resource;
+
+  @Before
+  public void setUp() {
+    resource = new File(RESOURCE_KEY);
+    resource.setId(RESOURCE_ID);
+    resource.setEffectiveKey(RESOURCE_EFFECTIVE_KEY);
+  }
+
   @Test
   public void testGetScmMeasuresForResourceWithoutThenWithCachedMeasure() throws Exception {
 
     final Set<Resource> resources = new HashSet<Resource>();
-    resources.add(this.resource);
+    resources.add(resource);
 
     when(this.sonarIndex.getResources()).thenReturn(resources);
-    when(this.resource.getEffectiveKey()).thenReturn(COMPONENT_KEY);
     when(this.sonarIndex.getMeasure(resource, CoreMetrics.SCM_AUTHORS_BY_LINE)).thenReturn(scmAuthorsByLineMeasure);
     when(this.sonarIndex.getMeasure(resource, CoreMetrics.SCM_LAST_COMMIT_DATETIMES_BY_LINE)).thenReturn(scmLastCommitDateTimesByLineMeasure);
     when(this.sonarIndex.getMeasure(resource, CoreMetrics.SCM_REVISIONS_BY_LINE)).thenReturn(scmRevisionsByLineMeasure);
@@ -86,7 +99,6 @@ public class ResourceMeasuresFinderTest {
     resources.add(this.resource);
 
     when(this.sonarIndex.getResources()).thenReturn(resources);
-    when(this.resource.getEffectiveKey()).thenReturn(COMPONENT_KEY);
     when(this.sonarIndex.getMeasure(resource, CoreMetrics.SCM_AUTHORS_BY_LINE)).thenReturn(scmAuthorsByLineMeasure);
     when(this.sonarIndex.getMeasure(resource, CoreMetrics.SCM_LAST_COMMIT_DATETIMES_BY_LINE)).thenReturn(scmLastCommitDateTimesByLineMeasure);
     when(this.sonarIndex.getMeasure(resource, CoreMetrics.SCM_REVISIONS_BY_LINE)).thenReturn(scmRevisionsByLineMeasure);
