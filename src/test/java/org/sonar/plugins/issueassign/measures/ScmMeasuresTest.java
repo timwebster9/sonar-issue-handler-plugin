@@ -79,7 +79,20 @@ public class ScmMeasuresTest {
 
   @Test
   public void testGetAuthorsByLine() throws Exception {
-    final Map<Integer, String> mapData = this.classUnderTest.getAuthorsByLine();
+    Map<Integer, String> mapData = this.classUnderTest.getAuthorsByLine();
+    assertThat(mapData).hasSize(3)
+        .containsKey(1).containsValue(AUTHOR1)
+        .containsKey(2).containsValue(AUTHOR2)
+        .containsKey(3).containsValue(AUTHOR3);
+
+    assertThat(mapData.get(1)).isEqualTo(AUTHOR1);
+    assertThat(mapData.get(2)).isEqualTo(AUTHOR2);
+    assertThat(mapData.get(3)).isEqualTo(AUTHOR3);
+
+    // repeat to test caching
+
+    mapData = this.classUnderTest.getAuthorsByLine();
+
     assertThat(mapData).hasSize(3)
         .containsKey(1).containsValue(AUTHOR1)
         .containsKey(2).containsValue(AUTHOR2)
@@ -108,6 +121,8 @@ public class ScmMeasuresTest {
     assertThat(mapData.get(2)).isEqualTo(date2);
     assertThat(mapData.get(3)).isEqualTo(date3);
 
+    // repeat to test caching
+
     mapData = this.classUnderTest.getLastCommitsByLine();
 
     assertThat(mapData).hasSize(3)
@@ -132,6 +147,8 @@ public class ScmMeasuresTest {
     assertThat(mapData.get(1)).isEqualTo(REVISION1);
     assertThat(mapData.get(2)).isEqualTo(REVISION2);
     assertThat(mapData.get(3)).isEqualTo(REVISION3);
+
+    // repeat to test caching
 
     mapData = this.classUnderTest.getRevisionsByLine();
 

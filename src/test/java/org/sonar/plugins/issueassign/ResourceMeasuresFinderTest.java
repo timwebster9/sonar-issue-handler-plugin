@@ -43,7 +43,6 @@ import static org.mockito.Mockito.when;
 public class ResourceMeasuresFinderTest {
 
   @Mock private SonarIndex sonarIndex;
-  //@Mock private Resource resource;
   @Mock private Measure scmAuthorsByLineMeasure;
   @Mock private Measure scmLastCommitDateTimesByLineMeasure;
   @Mock private Measure scmRevisionsByLineMeasure;
@@ -97,6 +96,20 @@ public class ResourceMeasuresFinderTest {
   public void testGetScmMeasuresForResourceWithNullResourceId() throws Exception {
 
     resource.setId(null);
+
+    final Set<Resource> resources = new HashSet<Resource>();
+    resources.add(resource);
+
+    when(this.sonarIndex.getResources()).thenReturn(resources);
+
+    final ResourceMeasuresFinder classUnderTest = new ResourceMeasuresFinder(this.sonarIndex);
+    classUnderTest.getScmMeasuresForResource(COMPONENT_KEY);
+  }
+
+  @Test(expected = ResourceNotFoundException.class)
+  public void testGetScmMeasuresForResourceWithNonMatchingKeys() throws Exception {
+
+    resource.setEffectiveKey("DIFFERENT_THAN_COMPONENT_KEY");
 
     final Set<Resource> resources = new HashSet<Resource>();
     resources.add(resource);
