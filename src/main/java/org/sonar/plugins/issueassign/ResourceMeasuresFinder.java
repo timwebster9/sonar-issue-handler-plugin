@@ -26,6 +26,7 @@ import org.sonar.api.measures.CoreMetrics;
 import org.sonar.api.measures.Measure;
 import org.sonar.api.measures.MeasureUtils;
 import org.sonar.api.measures.Metric;
+import org.sonar.api.resources.JavaFile;
 import org.sonar.api.resources.Resource;
 import org.sonar.plugins.issueassign.exception.MissingScmMeasureDataException;
 import org.sonar.plugins.issueassign.exception.ResourceNotFoundException;
@@ -59,6 +60,26 @@ public class ResourceMeasuresFinder {
   }
 
   private Resource getResourceFromIndex(final String componentKey) throws ResourceNotFoundException {
+    final Resource resource = getJavaResource(componentKey);
+    if (resource == null) {
+      return searchAllResources(componentKey);
+    }
+    return resource;
+  }
+
+  private Resource getJavaResource(final String componentKey) {
+    try {
+      final String resourceKey = componentKey.split(":")[2];
+      final Resource resourceRef = new JavaFile(resourceKey);
+      return this.sonarIndex.getResource(resourceRef);
+    }
+    catch (final Exception e) {
+      LOG.debug("Resource [" + componentKey + "] is apparently not a Java file.");
+      return null;
+    }
+  }
+
+  private Resource searchAllResources(final String componentKey) throws ResourceNotFoundException {
     final Collection<Resource> resources = this.sonarIndex.getResources();
 
     for (final Resource resource : resources) {

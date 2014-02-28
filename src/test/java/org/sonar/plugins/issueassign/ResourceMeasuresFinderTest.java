@@ -47,10 +47,10 @@ public class ResourceMeasuresFinderTest {
   @Mock private Measure scmLastCommitDateTimesByLineMeasure;
   @Mock private Measure scmRevisionsByLineMeasure;
 
-  private static final String COMPONENT_KEY = "RESOURCE_EFFECTIVE_KEY";
+  private static final String COMPONENT_KEY = "org:project:resource";
   private static final Integer RESOURCE_ID = 1;
   private static final String RESOURCE_KEY = "RESOURCE_KEY";
-  private static final String RESOURCE_EFFECTIVE_KEY = "RESOURCE_EFFECTIVE_KEY";
+  private static final String RESOURCE_EFFECTIVE_KEY = COMPONENT_KEY;
 
   //  not 'real' data
   private static final String SCM_AUTHOR_BY_LINE_DATA = "SCM_AUTHOR_BY_LINE_DATA";
