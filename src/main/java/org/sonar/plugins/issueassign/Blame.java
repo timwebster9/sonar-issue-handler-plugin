@@ -22,9 +22,12 @@ package org.sonar.plugins.issueassign;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sonar.api.issue.Issue;
+import org.sonar.api.resources.Resource;
 import org.sonar.plugins.issueassign.exception.IssueAssignPluginException;
 import org.sonar.plugins.issueassign.exception.MissingScmMeasureDataException;
 import org.sonar.plugins.issueassign.exception.NoUniqueAuthorForLastCommitException;
+import org.sonar.plugins.issueassign.exception.ResourceNotFoundException;
+import org.sonar.plugins.issueassign.measures.MeasuresFinder;
 import org.sonar.plugins.issueassign.measures.ScmMeasures;
 
 import java.util.*;
@@ -32,10 +35,13 @@ import java.util.*;
 public class Blame {
 
   private static final Logger LOG = LoggerFactory.getLogger(Blame.class);
-  private final ResourceMeasuresFinder resourceMeasuresFinder;
+  private Map<String, ScmMeasures> resourceMeasuresMap = new HashMap<String, ScmMeasures>();
+  private final ResourceFinder resourceFinder;
+  private final MeasuresFinder measuresFinder;
 
-  public Blame(final ResourceMeasuresFinder resourceMeasuresFinder) {
-    this.resourceMeasuresFinder = resourceMeasuresFinder;
+  public Blame(final ResourceFinder resourceFinder, final MeasuresFinder measuresFinder) {
+    this.resourceFinder = resourceFinder;
+    this.measuresFinder = measuresFinder;
   }
 
   public String getScmAuthorForIssue(final Issue issue) throws IssueAssignPluginException {
@@ -81,7 +87,7 @@ public class Blame {
   }
 
   private ScmMeasures getMeasuresForResource(final String resourceKey) throws IssueAssignPluginException {
-    final ScmMeasures scmMeasures = this.resourceMeasuresFinder.getScmMeasuresForResource(resourceKey);
+    final ScmMeasures scmMeasures = this.getScmMeasuresForResource(resourceKey);
     if (scmMeasures == null) {
       throw new MissingScmMeasureDataException();
     }
@@ -110,5 +116,18 @@ public class Blame {
     }
 
     return lines;
+  }
+
+  private ScmMeasures getScmMeasuresForResource(final String componentKey) throws MissingScmMeasureDataException, ResourceNotFoundException {
+    ScmMeasures scmMeasures = this.resourceMeasuresMap.get(componentKey);
+
+    if (scmMeasures != null) {
+      return scmMeasures;
+    }
+
+    final Resource resource = this.resourceFinder.find(componentKey);
+    scmMeasures = this.measuresFinder.getMeasures(resource);
+    this.resourceMeasuresMap.put(componentKey, scmMeasures);
+    return scmMeasures;
   }
 }

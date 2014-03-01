@@ -28,6 +28,7 @@ import org.sonar.api.issue.IssueHandler;
 import org.sonar.api.user.User;
 import org.sonar.api.user.UserFinder;
 import org.sonar.plugins.issueassign.exception.IssueAssignPluginException;
+import org.sonar.plugins.issueassign.measures.MeasuresFinder;
 
 public class IssueAssigner implements IssueHandler {
 
@@ -37,7 +38,7 @@ public class IssueAssigner implements IssueHandler {
   private final Assign assign;
 
   public IssueAssigner(final Settings settings, final UserFinder userFinder, final SonarIndex sonarIndex) {
-    this.blame = new Blame(new ResourceMeasuresFinder(sonarIndex));
+    this.blame = new Blame(new ResourceFinder(sonarIndex), new MeasuresFinder(sonarIndex));
     this.assign = new Assign(settings, userFinder);
     this.settings = settings;
   }
