@@ -40,6 +40,7 @@ public class ResourceFinder {
   public Resource find(final String componentKey) throws ResourceNotFoundException {
     final Resource resource = getJavaResource(componentKey);
     if (resource == null) {
+        LOG.debug("Not a Java resource, searching entire index...");
       return searchAllResources(componentKey);
     }
     return resource;
@@ -47,13 +48,19 @@ public class ResourceFinder {
 
   private Resource getJavaResource(final String componentKey) {
     try {
-      final String resourceKey = componentKey.split(":")[2];
-      final Resource resourceRef = new JavaFile(resourceKey);
-      return this.sonarIndex.getResource(resourceRef);
+      final String resourceKey = getResourceKeyFromComponentKey(componentKey);
+      final Resource javaResource = this.sonarIndex.getResource(new JavaFile(resourceKey));
+      LOG.debug("Found Java resource with key: [" + javaResource.getKey() + "]");
+      return javaResource;
     }
     catch (final Exception e) {
       return null;
     }
+  }
+
+  // component key format: org:project:resourceKey
+  private String getResourceKeyFromComponentKey(final String componentKey) {
+    return componentKey.split(":")[2];
   }
 
   private Resource searchAllResources(final String componentKey) throws ResourceNotFoundException {
