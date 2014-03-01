@@ -61,7 +61,10 @@ public class ResourceFinder {
 
     for (final Resource resource : resources) {
       if (matches(componentKey, resource)) {
-        LOG.info("Found resource for [" + componentKey + "]");
+        LOG.debug("Found resource for [" + componentKey + "]");
+        LOG.debug("Resource class type: [" + resource.getClass().getName() + "]");
+        LOG.debug("Resource key: [" + resource.getKey() + "]");
+        LOG.debug("Resource id: [" + resource.getId() + "]");
         return resource;
       }
     }
