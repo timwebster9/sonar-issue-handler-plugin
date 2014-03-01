@@ -97,6 +97,20 @@ public class ResourceFinderTest {
   }
 
   @Test(expected = ResourceNotFoundException.class)
+  public void testFindWithNonJavaResourceWithNoId() throws ResourceNotFoundException {
+
+    nonJavaResource.setId(null);
+
+    when(sonarIndex.getResource(isA(JavaFile.class))).thenReturn(null);
+    when(sonarIndex.getResources()).thenReturn(resources);
+
+    final ResourceFinder classUnderTest = new ResourceFinder(sonarIndex);
+    final Resource resource = classUnderTest.find(RESOURCE_KEY);
+
+    assertThat(resource).isSameAs(nonJavaResource);
+  }
+
+  @Test(expected = ResourceNotFoundException.class)
   public void testFindWithNoResourceFound() throws ResourceNotFoundException {
 
     when(sonarIndex.getResource(isA(JavaFile.class))).thenReturn(null);
