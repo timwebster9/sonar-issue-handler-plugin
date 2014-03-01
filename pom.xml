@@ -35,6 +35,14 @@
     </license>
   </licenses>
 
+  <developers>
+    <developer>
+      <name>Tim Webster</name>
+      <email>tim.webster@gmail.com</email>
+      <timezone>+0</timezone>
+    </developer>
+  </developers>
+
   <dependencies>
     <dependency>
       <groupId>org.codehaus.sonar</groupId>
@@ -43,16 +51,6 @@
       <scope>provided</scope>
     </dependency>
 
-    <dependency>
-      <groupId>org.codehaus.sonar</groupId>
-      <artifactId>sonar-ws-client</artifactId>
-      <version>4.1</version>
-    </dependency>
-    <dependency>
-      <groupId>commons-httpclient</groupId>
-      <artifactId>commons-httpclient</artifactId>
-      <version>3.1</version>
-    </dependency>
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
@@ -65,11 +63,6 @@
       <artifactId>sonar-testing-harness</artifactId>
       <version>${sonar.buildVersion}</version>
       <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.easymock</groupId>
-      <artifactId>easymock</artifactId>
-      <version>3.2</version>
     </dependency>
     <dependency>
       <groupId>org.easytesting</groupId>
