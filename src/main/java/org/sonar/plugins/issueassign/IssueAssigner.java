@@ -19,6 +19,12 @@
  */
 package org.sonar.plugins.issueassign;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.logging.SimpleFormatter;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sonar.api.config.Settings;
@@ -51,7 +57,7 @@ public class IssueAssigner implements IssueHandler {
     final Issue issue = context.issue();
 
     //TODO not sure this check is necessary
-    if (issue.isNew()) {
+    if (issue.isNew() || issueAfterDefectIntroducedDate(issue)) {
       LOG.debug("Found new issue [" + issue.key() + "]");
       try {
         this.assignIssue(context, issue);
@@ -60,7 +66,36 @@ public class IssueAssigner implements IssueHandler {
       } catch (final Exception e) {
         LOG.error("Error assigning issue [" + issue.key() + "]", e);
       }
-    }
+    } 
+  }
+  
+  private boolean issueAfterDefectIntroducedDate(final Issue issue) {
+	  
+	  boolean result = false;
+	  String defectIntroducedDatePref = this.settings.getString(IssueAssignPlugin.PROPERTY_DEFECT_ITRODUCED_DATE);
+	  DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
+	  Date introducedDate = null; 
+	  try {
+		  if(defectIntroducedDatePref != null) {
+			  introducedDate = df.parse(defectIntroducedDatePref);
+			  
+			  Date creationDate = issue.creationDate();
+			  Date updateDate = issue.updateDate();
+			  if(introducedDate != null) {
+				
+				  boolean problemCreatedAfterIntroducedDate = creationDate != null && introducedDate.before(creationDate);
+				  boolean problemUpdatedAfterIntroducedDate = updateDate != null && introducedDate.before(updateDate);
+				  
+				  if(problemCreatedAfterIntroducedDate || problemUpdatedAfterIntroducedDate) {
+					  result = true;
+				  }
+			  }
+		  }
+	  } catch(ParseException e) {
+		LOG.error("Unable to parse date: " + defectIntroducedDatePref);  
+	  }	  
+	  
+	  return result;
   }
 
   private void assignIssue(final Context context, final Issue issue) throws IssueAssignPluginException {
