@@ -57,7 +57,7 @@ public class IssueAssigner implements IssueHandler {
     final Issue issue = context.issue();
 
     //TODO not sure this check is necessary
-    if (issue.isNew() || issueAfterDefectIntroducedDate(issue)) {
+    if (issue.isNew() || (issueAfterDefectIntroducedDate(issue) && issue.assignee() == null)) {
       LOG.debug("Found new issue [" + issue.key() + "]");
       try {
         this.assignIssue(context, issue);
