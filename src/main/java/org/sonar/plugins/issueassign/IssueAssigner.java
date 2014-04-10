@@ -55,8 +55,8 @@ public class IssueAssigner implements IssueHandler {
     }
 
     final Issue issue = context.issue();
-
-    //TODO not sure this check is necessary
+    
+    //Make sure the issue is only assigned if new or if it was introduced after the introduced date.
     if (issue.isNew() || (issueAfterDefectIntroducedDate(issue) && issue.assignee() == null)) {
       LOG.debug("Found new issue [" + issue.key() + "]");
       try {
@@ -100,7 +100,8 @@ public class IssueAssigner implements IssueHandler {
 
   private void assignIssue(final Context context, final Issue issue) throws IssueAssignPluginException {
 
-    final String author = blame.getScmAuthorForIssue(issue);
+	final boolean assignToAuthor = this.settings.getBoolean(IssueAssignPlugin.PROPERTY_ASSIGN_TO_AUTHOR);
+    final String author = blame.getScmAuthorForIssue(issue, assignToAuthor);
     final User assignee;
 
     if (author == null) {
