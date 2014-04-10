@@ -97,7 +97,7 @@ public class BlameTest {
     when(mockIssue.line()).thenReturn(1);
 
     final Blame classUnderTest = new Blame(mockMeasuresCollector);
-    final String author = classUnderTest.getScmAuthorForIssue(mockIssue);
+    final String author = classUnderTest.getScmAuthorForIssue(mockIssue, false);
     assertThat(author).isEqualTo(AUTHOR1);
   }
 
@@ -125,7 +125,7 @@ public class BlameTest {
     when(mockIssue.line()).thenReturn(1);
 
     final Blame classUnderTest = new Blame(mockMeasuresCollector);
-    final String author = classUnderTest.getScmAuthorForIssue(mockIssue);
+    final String author = classUnderTest.getScmAuthorForIssue(mockIssue, false);
     assertThat(author).isEqualTo(AUTHOR3);
   }
 
@@ -135,7 +135,7 @@ public class BlameTest {
     when(scmMeasures.getAuthorsByLine()).thenReturn(null);
 
     final Blame classUnderTest = new Blame(mockMeasuresCollector);
-    classUnderTest.getScmAuthorForIssue(mockIssue);
+    classUnderTest.getScmAuthorForIssue(mockIssue, false);
   }
 
   @Test(expected = NoUniqueAuthorForLastCommitException.class)
@@ -160,7 +160,7 @@ public class BlameTest {
     when(mockIssue.line()).thenReturn(1);
 
     final Blame classUnderTest = new Blame(mockMeasuresCollector);
-    final String author = classUnderTest.getScmAuthorForIssue(mockIssue);
+    final String author = classUnderTest.getScmAuthorForIssue(mockIssue, false);
     assertThat(author).isEqualTo(AUTHOR3);
   }
 }
