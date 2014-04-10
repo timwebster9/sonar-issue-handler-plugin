@@ -38,12 +38,12 @@ public class Blame {
     this.measuresCollector = measuresCollector;
   }
 
-  public String getScmAuthorForIssue(final Issue issue) throws MissingScmMeasureDataException {
+  public String getScmAuthorForIssue(final Issue issue, final boolean assignToAuthor) throws MissingScmMeasureDataException {
 
     final String authorForIssueLine = this.getAuthorForIssueLine(issue);
     final String lastCommitterForResource = getLastCommitterForResource(issue.componentKey());
 
-    if (lastCommitterForResource.equals(authorForIssueLine)) {
+    if (assignToAuthor || lastCommitterForResource.equals(authorForIssueLine)) {
       LOG.debug("Author [" + authorForIssueLine + "] is also the last committer.");
       return authorForIssueLine;
     }
