@@ -68,7 +68,13 @@ import java.util.List;
     	description = "Some SCM authors may not be formatted in a way that will work with this plug in, so long as the Author contains an email address and is delimited with a start and end charater this pref can be used to find the email in the Author name.",
     	project = true,
     	type = PropertyType.STRING,
-    	defaultValue = "")
+    	defaultValue = ""),
+    @Property(key = IssueAssignPlugin.PROPERTY_ASSIGN_TO_AUTHOR,
+    	name = "Always assign to Author",
+    	description = "Set to true if you want to always assign to the defect author, set to false if you want to assign to the last commiter on the file if they are different from the author.",
+    	project = true,
+    	type = PropertyType.BOOLEAN,
+    	defaultValue = "false")
 })
 public final class IssueAssignPlugin extends SonarPlugin {
 
@@ -78,6 +84,7 @@ public final class IssueAssignPlugin extends SonarPlugin {
   public static final String PROPERTY_DEFECT_ITRODUCED_DATE = "defect.introduced";
   public static final String PROPERTY_EMAIL_START_CHAR = "email.start.char";
   public static final String PROPERTY_EMAIL_END_CHAR = "email.end.char";
+  public static final String PROPERTY_ASSIGN_TO_AUTHOR = "assigne.to.last.commiter";
 
   public List getExtensions() {
     return Arrays.asList(MeasuresCollector.class,
