@@ -78,7 +78,7 @@ public class IssueAssignerTest {
     when(issue.componentKey()).thenReturn(COMPONENT_KEY);
     when(settings.getBoolean(IssueAssignPlugin.PROPERTY_ENABLED)).thenReturn(true);
     when(settings.getString(IssueAssignPlugin.PROPERTY_DEFECT_ITRODUCED_DATE)).thenReturn("04/02/2014");
-    when(blame.getScmAuthorForIssue(issue)).thenReturn(SCM_AUTHOR_WITH_EMAIL);
+    when(blame.getScmAuthorForIssue(issue, false)).thenReturn(SCM_AUTHOR_WITH_EMAIL);
     when(settings.getString(IssueAssignPlugin.PROPERTY_EMAIL_START_CHAR)).thenReturn("<");
     when(settings.getString(IssueAssignPlugin.PROPERTY_EMAIL_END_CHAR)).thenReturn(">");
     when(assign.getAssignee(SCM_AUTHOR_WITH_EMAIL)).thenReturn(assignee);
@@ -120,7 +120,7 @@ public class IssueAssignerTest {
     when(issue.componentKey()).thenReturn(COMPONENT_KEY);
     when(settings.getBoolean(IssueAssignPlugin.PROPERTY_ENABLED)).thenReturn(true);
     when(issue.isNew()).thenReturn(true);
-    when(blame.getScmAuthorForIssue(issue)).thenReturn(SCM_AUTHOR);
+    when(blame.getScmAuthorForIssue(issue, false)).thenReturn(SCM_AUTHOR);
     when(issue.key()).thenReturn(ISSUE_KEY);
     when(assign.getAssignee(SCM_AUTHOR)).thenReturn(assignee);
 
@@ -141,7 +141,7 @@ public class IssueAssignerTest {
     when(issue.componentKey()).thenReturn(COMPONENT_KEY);
     when(settings.getBoolean(IssueAssignPlugin.PROPERTY_ENABLED)).thenReturn(true);
     when(issue.isNew()).thenReturn(true);
-    when(blame.getScmAuthorForIssue(issue)).thenReturn(SCM_AUTHOR);
+    when(blame.getScmAuthorForIssue(issue, false)).thenReturn(SCM_AUTHOR);
     when(issue.key()).thenReturn(ISSUE_KEY);
     when(assign.getAssignee(SCM_AUTHOR)).thenThrow(RuntimeException.class);
 
@@ -162,7 +162,7 @@ public class IssueAssignerTest {
     when(issue.componentKey()).thenReturn(COMPONENT_KEY);
     when(settings.getBoolean(IssueAssignPlugin.PROPERTY_ENABLED)).thenReturn(true);
     when(issue.isNew()).thenReturn(true);
-    when(blame.getScmAuthorForIssue(issue)).thenReturn(SCM_AUTHOR);
+    when(blame.getScmAuthorForIssue(issue, false)).thenReturn(SCM_AUTHOR);
     when(issue.key()).thenReturn(ISSUE_KEY);
     when(assign.getAssignee(SCM_AUTHOR)).thenThrow(IssueAssignPluginException.class);
 
@@ -198,7 +198,7 @@ public class IssueAssignerTest {
     when(issue.componentKey()).thenReturn(COMPONENT_KEY);
     when(settings.getBoolean(IssueAssignPlugin.PROPERTY_ENABLED)).thenReturn(true);
     when(issue.isNew()).thenReturn(true);
-    when(blame.getScmAuthorForIssue(issue)).thenReturn(null);
+    when(blame.getScmAuthorForIssue(issue, false)).thenReturn(null);
     when(issue.key()).thenReturn(ISSUE_KEY);
     when(assign.getAssignee()).thenReturn(assignee);
 
